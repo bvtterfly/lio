@@ -33,6 +33,7 @@ jobs:
           && sudo apt-get install optipng
           && sudo apt-get install libjpeg-progs
           && npm install -g svgo@1.3.2
+          && sudo apt-get install webp
 
       - name: Checkout code
         uses: actions/checkout@v2

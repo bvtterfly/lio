@@ -1,9 +1,9 @@
 # Easily optimize images using Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/bvtterfly/lio.svg?style=flat-square)](https://packagist.org/packages/bvtterfly/laravel-image-optimizer)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/bvtterfly/lio/run-tests?label=tests)](https://github.com/bvtterfly/laravel-image-optimizer/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/bvtterfly/lio/Check%20&%20fix%20styling?label=code%20style)](https://github.com/bvtterfly/laravel-image-optimizer/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/bvtterfly/lio?style=flat-square)](https://packagist.org/packages/bvtterfly/laravel-image-optimizer)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/bvtterfly/lio.svg?style=flat-square)](https://packagist.org/packages/bvtterfly/lio)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/bvtterfly/lio/run-tests?label=tests)](https://github.com/bvtterfly/lio/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/bvtterfly/lio/Check%20&%20fix%20styling?label=code%20style)](https://github.com/bvtterfly/lio/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/bvtterfly/lio?style=flat-square)](https://packagist.org/packages/bvtterfly/lio)
 
 This package can optimize PNGs, JPGs, SVGs, and GIFs by running them through a chain of various [image optimization tools](https://github.com/bvtterfly/lio#optimization-tools).
 It is heavily based on `Spatie`'s `spatie/image-optimizer` and `spatie/laravel-image-optimizer` packages.

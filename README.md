@@ -38,7 +38,7 @@ The package uses a bunch of binaries to optimize images. To learn which ones on 
 The package comes with some sane defaults to optimize images. You can modify that configuration by publishing the config file.
 
 ```bash
-php artisan vendor:publish --tag="laravel-image-optimizer-config"
+php artisan vendor:publish --tag="lio-config"
 ```
 
 This is the contents of the published config file:

@@ -39,9 +39,10 @@ class OptimizerChainFactory
         }
 
         if (class_exists($configuredLogger)) {
-            if(is_a($configuredLogger, LoggerInterface::class, true)) {
+            if (is_a($configuredLogger, LoggerInterface::class, true)) {
                 return new $configuredLogger();
             }
+
             throw InvalidConfiguration::notAnLogger($configuredLogger);
         }
 

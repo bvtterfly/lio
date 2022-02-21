@@ -38,15 +38,14 @@ class OptimizerChainFactory
             return new DummyLogger();
         }
 
-        if (in_array($configuredLogger, $logManager->getChannels())) {
-            return $logManager->channel($configuredLogger);
+        if (class_exists($configuredLogger)) {
+            if(is_a($configuredLogger, LoggerInterface::class, true)) {
+                return new $configuredLogger();
+            }
+            throw InvalidConfiguration::notAnLogger($configuredLogger);
         }
 
-        if (is_a($configuredLogger, LoggerInterface::class, true)) {
-            return new $configuredLogger();
-        }
-
-        throw InvalidConfiguration::notAnLogger($configuredLogger);
+        return $logManager->channel($configuredLogger);
     }
 
     private static function getOptimizers(array $config): array

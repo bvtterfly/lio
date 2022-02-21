@@ -1,0 +1,69 @@
+{
+    "name": "bvtterfly/lio",
+    "description": "Easily optimize images using Laravel",
+    "keywords": [
+        "bvtterfly",
+        "laravel",
+        "laravel-image-optimizer",
+        "lio"
+    ],
+    "homepage": "https://github.com/bvtterfly/lio",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ARI",
+            "email": "thearihdrn@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/contracts": "^9.0",
+        "spatie/laravel-package-tools": "^1.9.2",
+        "spatie/temporary-directory": "^2.0",
+        "ext-fileinfo": "*"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^6.0",
+        "nunomaduro/larastan": "^2.0.1",
+        "orchestra/testbench": "^7.0",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "spatie/laravel-ray": "^1.26"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bvtterfly\\Lio\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bvtterfly\\Lio\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "\\Bvtterfly\\Lio\\LioServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

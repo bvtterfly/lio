@@ -17,7 +17,6 @@ class OptimizerChain
 
     private Filesystem $filesystem;
 
-
     public function __construct()
     {
     }
@@ -119,7 +118,6 @@ class OptimizerChain
             ->run();
 
         $this->logResult($process);
-
     }
 
     protected function logResult(Process $process)
@@ -132,5 +130,4 @@ class OptimizerChain
 
         $this->logger->info("Process successfully ended with output `{$process->getOutput()}`");
     }
-
 }

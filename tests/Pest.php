@@ -19,7 +19,6 @@ function decreasedFileSize(string $modifiedFilePath, string $originalFilePath)
         ->toBeGreaterThan(0)
         ->toBeLessThan($originalFileSize)
     ;
-
 }
 
 function imageFileExists(string $path)

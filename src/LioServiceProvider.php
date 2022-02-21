@@ -22,6 +22,5 @@ class LioServiceProvider extends PackageServiceProvider
         });
 
         $this->app->alias(OptimizerChain::class, 'image-optimizer');
-
     }
 }

@@ -4,7 +4,7 @@ use Bvtterfly\Lio\Facades\ImageOptimizer;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
-it('has a facade', function (){
+it('has a facade', function () {
     $tempDirPath = __DIR__.'/temp';
     Storage::fake('images');
     Config::set('lio.disk', 'images');

@@ -10,10 +10,8 @@ class TempImage
     private function __construct(
         private string $filename,
         private TemporaryDirectory $temporaryDirectory
-    )
-    {
+    ) {
     }
-
 
     /**
      * @param string $content
@@ -27,6 +25,7 @@ class TempImage
             ->force()
             ->create();
         file_put_contents($temporaryDirectory->path($filename), $content);
+
         return new TempImage($filename, $temporaryDirectory);
     }
 
@@ -56,5 +55,4 @@ class TempImage
     {
         $this->delete();
     }
-
 }

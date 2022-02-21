@@ -7,14 +7,12 @@ use InvalidArgumentException;
 
 class Image
 {
-
     private string $pathToImage;
 
     public function __construct(
         private Filesystem $disk,
         string             $pathToImage
-    )
-    {
+    ) {
         if (! $disk->exists($pathToImage)) {
             throw new InvalidArgumentException("`{$pathToImage}` does not exist");
         }
@@ -39,5 +37,4 @@ class Image
             $this->pathToImage
         );
     }
-
 }

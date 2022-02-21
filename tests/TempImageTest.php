@@ -3,7 +3,7 @@
 use Bvtterfly\Lio\TempImage;
 use Illuminate\Support\Facades\Config;
 
-beforeEach(function(){
+beforeEach(function () {
     $tempDirPath = __DIR__.'/temp';
     Config::set('lio.temporary_directory', $tempDirPath);
 });
@@ -25,4 +25,3 @@ it('can get the extension', function () {
     $tempImage = TempImage::make(file_get_contents($imageFile), 'temp-filename.jpeg');
     expect($tempImage->extension())->toBe('jpeg');
 });
-

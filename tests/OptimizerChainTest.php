@@ -4,7 +4,7 @@ use Bvtterfly\Lio\OptimizerChain;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
-beforeEach(function(){
+beforeEach(function () {
     $tempDirPath = __DIR__.'/temp';
     Storage::fake('images');
     Config::set('lio.disk', 'images');

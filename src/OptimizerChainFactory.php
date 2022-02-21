@@ -53,7 +53,7 @@ class OptimizerChainFactory
     {
         return collect($config['optimizers'])
             ->mapWithKeys(function (array $options, string $optimizerClass) use ($config) {
-                if (!is_a($optimizerClass, Optimizer::class, true)) {
+                if (! is_a($optimizerClass, Optimizer::class, true)) {
                     throw InvalidConfiguration::notAnOptimizer($optimizerClass);
                 }
 
@@ -92,5 +92,4 @@ class OptimizerChainFactory
 
         return $factory->disk($disk);
     }
-
 }

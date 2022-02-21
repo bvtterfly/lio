@@ -2,8 +2,7 @@
 
 use Bvtterfly\Lio\Optimizers\Jpegoptim;
 
-
-it('can accept options via the constructor', function (){
+it('can accept options via the constructor', function () {
     $optimizer = (new Jpegoptim(['option1', 'option2']))->setImagePath('my-image.jpg');
     expect($optimizer)
         ->getCommand()
@@ -11,7 +10,7 @@ it('can accept options via the constructor', function (){
     ;
 });
 
-it('can set a binary path', function (){
+it('can set a binary path', function () {
     $optimizer = (new Jpegoptim())
         ->setImagePath('my-image.jpg')
         ->setBinaryPath('testPath');
@@ -38,16 +37,17 @@ it('can set a binary path', function (){
 });
 
 
-it('can override options', function (){
+it('can override options', function () {
     $optimizer = (new Jpegoptim(['option1', 'option2']))->setImagePath('my-image.jpg');
-    $optimizer->setOptions(['option3', 'option4']);    expect($optimizer)
+    $optimizer->setOptions(['option3', 'option4']);
+    expect($optimizer)
         ->getCommand()
         ->toBe("\"jpegoptim\" option3 option4 'my-image.jpg'")
     ;
 });
 
 
-it('can get jpeg binary name', function (){
+it('can get jpeg binary name', function () {
     $optimizer = (new Jpegoptim(['option1', 'option2']))->setImagePath('my-image.jpg');
 
     $optimizer->setOptions(['option3', 'option4']);

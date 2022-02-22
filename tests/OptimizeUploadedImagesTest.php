@@ -2,10 +2,8 @@
 
 
 use Bvtterfly\Lio\Middlewares\OptimizeUploadedImages;
-use Bvtterfly\Lio\Tests\TestEnvironmentMiddleware;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Route;
 
 it('will try to optimize all files in a request', function () {
     $tempDirectory = getTempDirectory();
@@ -26,8 +24,7 @@ it('will try to optimize all files in a request', function () {
     $tempDirectory->delete();
 });
 
-it('will optimize all files at all depths', function (){
-
+it('will optimize all files at all depths', function () {
     $tempDirectory = getTempDirectory();
 
     $originalImagePath1 = getImagePath('image.jpeg');
@@ -61,7 +58,6 @@ it('will optimize all files at all depths', function (){
     decreasedFileSize($uploadPath3, $originalImagePath3);
 
     $tempDirectory->delete();
-
 });
 
 function getTempDirectory()

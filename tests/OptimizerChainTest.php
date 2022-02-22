@@ -39,7 +39,6 @@ it('can optimize a local image', function () {
     $optimizerChain->optimizeLocal($imagePath, $optimizedImagePath);
     expect(file_exists($optimizedImagePath))->toBeTrue();
     $tempDirectory->delete();
-
 });
 
 it('can decrease size of a png file', function () {

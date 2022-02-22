@@ -4,7 +4,6 @@ namespace Bvtterfly\Lio;
 
 use InvalidArgumentException;
 
-
 class LocalImage implements Image
 {
     public function __construct(protected string $pathToImage)

@@ -3,7 +3,6 @@
 namespace Bvtterfly\Lio;
 
 use Illuminate\Support\Str;
-use Spatie\TemporaryDirectory\Exceptions\PathAlreadyExists;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 
 class TempLocalImage implements Image

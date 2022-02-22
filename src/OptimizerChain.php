@@ -107,7 +107,6 @@ class OptimizerChain
         $this->optimizeImage($pathToImage, $image);
     }
 
-
     /**
      * @param string $pathToImage
      * @param Image $image

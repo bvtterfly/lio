@@ -5,16 +5,21 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/bvtterfly/lio/Check%20&%20fix%20styling?label=code%20style)](https://github.com/bvtterfly/lio/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/bvtterfly/lio?style=flat-square)](https://packagist.org/packages/bvtterfly/lio)
 
-This package can optimize PNGs, JPGs, SVGs, and GIFs by running them through a chain of various [image optimization tools](https://github.com/bvtterfly/lio#optimization-tools).
-It is heavily based on `Spatie`'s `spatie/image-optimizer` and `spatie/laravel-image-optimizer` packages.
-Unlike them, It works with Laravel's filesystem disks, and it'll automatically take care of the download & upload of your images.
+Lio can optimize PNGs, JPGs, SVGs, and GIFs by running them through a chain of various [image optimization tools](https://github.com/bvtterfly/lio#optimization-tools).
+
+This package is heavily based on `Spatie`'s `spatie/image-optimizer` and `spatie/laravel-image-optimizer` packages and can optimize local images like them.
+In addition, It optimizes images stored on the Laravel filesystem disks.
 
 Here's how you can use it:
 
 ```php
 use Bvtterfly\Lio\Facades\ImageOptimizer;
-// the image will be optimized and stored in the output path  
+// The image from your configured filesystem disk will be downloaded, optimized, and uploaded to the output path in
 ImageOptimizer::optimize($pathToImage, $pathToOptimizedImage);
+// The local image will be replaced with an optimized version which should be smaller
+ImageOptimizer::optimizeLocal($pathToImage);
+// if you use a second parameter the package will not modify the original
+ImageOptimizer::optimizeLocal($pathToImage, $pathToOptimizedImage);
 ```
 If you don't like facades, just resolve a configured instance of `Bvtterfly\Lio\OptimizerChain` out of the container:
 
@@ -33,7 +38,7 @@ composer require bvtterfly/lio
 
 The package will automatically register itself.
 
-The package uses a bunch of binaries to optimize images. To learn which ones on how to install them, head over to the optimization tools section in the readme of the underlying image-optimizer package. That readme also contains info on what these tools will do to your images.
+The package uses a bunch of binaries to optimize images. To learn which ones on how to install them, head over to the [optimization tools](https://github.com/bvtterfly/lio#optimization-tools) section.
 
 The package comes with some sane defaults to optimize images. You can modify that configuration by publishing the config file.
 
@@ -212,8 +217,28 @@ or using facade:
 
 ```php
 use Bvtterfly\Lio\Facades\ImageOptimizer;
-// the image will be optimized and stored in the output path  
+// The image from your configured filesystem disk will be downloaded, optimized, and uploaded to the output path in
 ImageOptimizer::optimize($pathToImage, $pathToOptimizedImage);
+```
+if your files are local you can using `optimizeLocal` method:
+
+```php
+use Bvtterfly\Lio\Facades\ImageOptimizer;
+// The local image will be replaced with an optimized version which should be smaller
+ImageOptimizer::optimizeLocal($pathToImage);
+// if you use a second parameter the package will not modify the original
+ImageOptimizer::optimizeLocal($pathToImage, $pathToOptimizedImage);
+```
+
+### Using the middleware
+
+If you want to optimize all uploaded images in requests to route automatically, You can use the `OptimizeUploadedImages` middleware.
+
+```php
+Route::middleware(OptimizeUploadedImages::class)->group(function () {
+    // all images will be optimized automatically
+    Route::post('images', 'ImageController@store');
+});
 ```
 
 ### Writing a custom optimizers
@@ -222,8 +247,6 @@ If you want to write your optimizer and optimize your images using another comma
 
 ```php
 namespace Bvtterfly\Lio;
-
-use Bvtterfly\Lio\TempImage;
 
 interface Optimizer
 {
@@ -237,14 +260,14 @@ interface Optimizer
     /**
      * Determines if the given image can be handled by the optimizer.
      *
-     * @param TempImage $image
+     * @param Image $image
      *
      * @return bool
      */
-    public function canHandle(TempImage $image): bool;
+    public function canHandle(Image $image): bool;
 
     /**
-     * Set the path to the image that should be optimized.
+     * Sets the path to the image that should be optimized.
      *
      * @param string $imagePath
      *
@@ -253,7 +276,7 @@ interface Optimizer
     public function setImagePath(string $imagePath);
 
     /**
-     * Set the options the optimizer should use.
+     * Sets the options the optimizer should use.
      *
      * @param array $options
      *
@@ -262,7 +285,7 @@ interface Optimizer
     public function setOptions(array $options = []);
 
     /**
-     * Get the command that should be executed.
+     * Gets the command that should be executed.
      *
      * @return string
      */

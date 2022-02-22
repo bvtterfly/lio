@@ -3,6 +3,7 @@
 use Bvtterfly\Lio\OptimizerChain;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Spatie\TemporaryDirectory\TemporaryDirectory;
 
 beforeEach(function () {
     $tempDirPath = __DIR__.'/temp';
@@ -12,13 +13,13 @@ beforeEach(function () {
     Config::set('lio.log_optimizer_activity', \Bvtterfly\Lio\Tests\ArrayLogger::class);
 });
 
-it('can decrease size of a jpeg file', function () {
+it('can optimize a filesystem image and decrease size of a jpeg file', function () {
     $imageDist = Storage::disk('images');
     $imageDist->put('test.jpeg', file_get_contents(__DIR__.'/tempFiles/image.jpeg'));
     /** @var OptimizerChain $optimizerChain */
     $optimizerChain = app(OptimizerChain::class);
     $optimizerChain->optimize('test.jpeg', 'opt-test.jpeg');
-    decreasedFileSize('opt-test.jpeg', 'test.jpeg');
+    decreasedFilesystemFileSize('opt-test.jpeg', 'test.jpeg');
     $logger = $optimizerChain->getLogger();
     expect($logger)->toBeInstanceOf(\Bvtterfly\Lio\Tests\ArrayLogger::class)
         ->getAllLinesAsString()
@@ -29,13 +30,25 @@ it('can decrease size of a jpeg file', function () {
     ;
 });
 
+it('can optimize a local image', function () {
+    $tempDirectory = (new TemporaryDirectory(__DIR__.'/temp'))->force()->create();
+    $imagePath = __DIR__.'/tempFiles/image.jpeg';
+    $optimizedImagePath = $tempDirectory->path('image.jpeg');
+    /** @var OptimizerChain $optimizerChain */
+    $optimizerChain = app(OptimizerChain::class);
+    $optimizerChain->optimizeLocal($imagePath, $optimizedImagePath);
+    expect(file_exists($optimizedImagePath))->toBeTrue();
+    $tempDirectory->delete();
+
+});
+
 it('can decrease size of a png file', function () {
     $imageDist = Storage::disk('images');
     $imageDist->put('test.png', file_get_contents(__DIR__.'/tempFiles/image.png'));
     /** @var OptimizerChain $optimizerChain */
     $optimizerChain = app(OptimizerChain::class);
     $optimizerChain->optimize('test.png', 'opt-test.png');
-    decreasedFileSize('opt-test.png', 'test.png');
+    decreasedFilesystemFileSize('opt-test.png', 'test.png');
     $logger = $optimizerChain->getLogger();
     expect($logger)->toBeInstanceOf(\Bvtterfly\Lio\Tests\ArrayLogger::class)
         ->getAllLinesAsString()
@@ -51,7 +64,7 @@ it('can decrease size of a gif file', function () {
     /** @var OptimizerChain $optimizerChain */
     $optimizerChain = app(OptimizerChain::class);
     $optimizerChain->optimize('test.gif', 'opt-test.gif');
-    decreasedFileSize('opt-test.gif', 'test.gif');
+    decreasedFilesystemFileSize('opt-test.gif', 'test.gif');
     $logger = $optimizerChain->getLogger();
     expect($logger)->toBeInstanceOf(\Bvtterfly\Lio\Tests\ArrayLogger::class)
         ->getAllLinesAsString()
@@ -68,7 +81,7 @@ it('can decrease size of a svg file', function () {
     /** @var OptimizerChain $optimizerChain */
     $optimizerChain = app(OptimizerChain::class);
     $optimizerChain->optimize('test.svg', 'opt-test.svg');
-    decreasedFileSize('opt-test.svg', 'test.svg');
+    decreasedFilesystemFileSize('opt-test.svg', 'test.svg');
     $logger = $optimizerChain->getLogger();
     expect($logger)->toBeInstanceOf(\Bvtterfly\Lio\Tests\ArrayLogger::class)
         ->getAllLinesAsString()
@@ -84,7 +97,7 @@ it('can decrease size of a webp file', function () {
     /** @var OptimizerChain $optimizerChain */
     $optimizerChain = app(OptimizerChain::class);
     $optimizerChain->optimize('test.webp', 'opt-test.webp');
-    decreasedFileSize('opt-test.webp', 'test.webp');
+    decreasedFilesystemFileSize('opt-test.webp', 'test.webp');
     $logger = $optimizerChain->getLogger();
     expect($logger)->toBeInstanceOf(\Bvtterfly\Lio\Tests\ArrayLogger::class)
         ->getAllLinesAsString()

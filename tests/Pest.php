@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Storage;
 
 uses(TestCase::class)->in(__DIR__);
 
-function decreasedFileSize(string $modifiedFilePath, string $originalFilePath)
+function decreasedFilesystemFileSize(string $modifiedFilePath, string $originalFilePath)
 {
     imageFileExists($originalFilePath);
 
@@ -29,4 +29,16 @@ function imageFileExists(string $path)
 function imageFileSize(string $path): int
 {
     return strlen(Storage::disk('images')->get($path));
+}
+
+function decreasedFileSize(string $modifiedFilePath, string $originalFilePath)
+{
+    expect(file_exists($modifiedFilePath))->toBeTrue();
+    expect(file_exists($originalFilePath))->toBeTrue();
+
+    $modifiedFileSize = filesize($modifiedFilePath);
+    $originalFileSize = filesize($originalFilePath);
+
+    expect($modifiedFileSize)->toBeLessThan($originalFileSize);
+    expect($modifiedFileSize)->toBeGreaterThan(0);
 }

@@ -2,13 +2,13 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\TempImage;
+use Bvtterfly\Lio\Image;
 
 class Cwebp extends BaseOptimizer
 {
     public string $binaryName = 'cwebp';
 
-    public function canHandle(TempImage $image): bool
+    public function canHandle(Image $image): bool
     {
         return $image->mime() === 'image/webp';
     }

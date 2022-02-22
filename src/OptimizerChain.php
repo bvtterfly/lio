@@ -54,8 +54,9 @@ class OptimizerChain
         return $this;
     }
 
-    /*
-     * Set the amount of seconds each separate optimizer may use.
+    /** Sets the amount of seconds each separate optimizer may use.
+     * @param int $timeoutInSeconds
+     * @return $this
      */
     public function setTimeout(int $timeoutInSeconds): static
     {
@@ -80,22 +81,48 @@ class OptimizerChain
 
     public function optimize(string $pathToImage, string $pathToOutput)
     {
-        $image = Image::make($this->filesystem, $pathToImage);
+        $image = FilesystemImage::make($this->filesystem, $pathToImage);
 
         $tempImage = $image->tempImage();
 
         $pathToImage = $tempImage->path();
 
+        $this->optimizeImage($pathToImage, $tempImage);
+
+        $image->update($tempImage, $pathToOutput);
+
+        $tempImage->delete();
+    }
+
+    public function optimizeLocal(string $pathToImage, string $pathToOutput = null)
+    {
+        if ($pathToOutput) {
+            copy($pathToImage, $pathToOutput);
+
+            $pathToImage = $pathToOutput;
+        }
+
+        $image = new LocalImage($pathToImage);
+
+        $this->optimizeImage($pathToImage, $image);
+    }
+
+
+    /**
+     * @param string $pathToImage
+     * @param Image $image
+     * @return void
+     */
+    protected function optimizeImage(string $pathToImage, Image $image): void
+    {
         $this->logger->info("Start optimizing {$pathToImage}");
 
         foreach ($this->optimizers as $optimizer) {
-            $this->applyOptimizer($optimizer, $tempImage);
+            $this->applyOptimizer($optimizer, $image);
         }
-
-        $image->update($tempImage, $pathToOutput);
     }
 
-    protected function applyOptimizer(Optimizer $optimizer, TempImage $image)
+    protected function applyOptimizer(Optimizer $optimizer, Image $image)
     {
         if (! $optimizer->canHandle($image)) {
             return;

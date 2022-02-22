@@ -1,7 +1,7 @@
 <?php
 
-use Bvtterfly\Lio\Image;
-use Bvtterfly\Lio\TempImage;
+use Bvtterfly\Lio\FilesystemImage;
+use Bvtterfly\Lio\TempLocalImage;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,21 +13,21 @@ beforeEach(function () {
 });
 
 it('throw an exception when given a non existing file', function () {
-    new Image(Storage::disk('images'), 'non existing file');
+    new FilesystemImage(Storage::disk('images'), 'non existing file');
 })->throws(InvalidArgumentException::class, "`non existing file` does not exist");
 
 it('can get a temp file', function () {
     $imagesDisk = Storage::disk('images');
     $imagesDisk->put('test-file.txt', 'content');
-    $image = new Image(Storage::disk('images'), 'test-file.txt');
+    $image = new FilesystemImage(Storage::disk('images'), 'test-file.txt');
     $tempImage = $image->tempImage();
-    expect($tempImage)->toBeInstanceOf(TempImage::class);
+    expect($tempImage)->toBeInstanceOf(TempLocalImage::class);
 });
 
 it('can update file content from temp file', function () {
     $imagesDisk = Storage::disk('images');
     $imagesDisk->put('test-file.txt', 'content');
-    $image = new Image(Storage::disk('images'), 'test-file.txt');
+    $image = new FilesystemImage(Storage::disk('images'), 'test-file.txt');
     $tempImage = $image->tempImage();
     file_put_contents($tempImage->path(), 'new content');
     $image->update($tempImage, 'new-test-file.txt');

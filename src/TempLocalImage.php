@@ -3,9 +3,10 @@
 namespace Bvtterfly\Lio;
 
 use Illuminate\Support\Str;
+use Spatie\TemporaryDirectory\Exceptions\PathAlreadyExists;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 
-class TempImage
+class TempLocalImage implements Image
 {
     private function __construct(
         private string $filename,
@@ -16,9 +17,9 @@ class TempImage
     /**
      * @param string $content
      * @param string|null $filename
-     * @return TempImage
+     * @return TempLocalImage
      */
-    public static function make(string $content, ?string $filename = null): TempImage
+    public static function make(string $content, ?string $filename = null): TempLocalImage
     {
         $filename ??= Str::random();
         $temporaryDirectory = (new TemporaryDirectory(config('lio.temporary_directory')))
@@ -26,7 +27,7 @@ class TempImage
             ->create();
         file_put_contents($temporaryDirectory->path($filename), $content);
 
-        return new TempImage($filename, $temporaryDirectory);
+        return new TempLocalImage($filename, $temporaryDirectory);
     }
 
     public function mime(): string

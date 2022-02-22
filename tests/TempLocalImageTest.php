@@ -1,6 +1,6 @@
 <?php
 
-use Bvtterfly\Lio\TempImage;
+use Bvtterfly\Lio\TempLocalImage;
 use Illuminate\Support\Facades\Config;
 
 beforeEach(function () {
@@ -9,19 +9,19 @@ beforeEach(function () {
 });
 
 it('can create temp image', function () {
-    $tempImage = TempImage::make('test', 'temp-filename.jpeg');
+    $tempImage = TempLocalImage::make('test', 'temp-filename.jpeg');
     expect(file_get_contents($tempImage->path()))->toBe('test');
     expect($tempImage->path())->toContain(__DIR__.'/temp');
 });
 
 it('can get type mime type', function () {
     $imageFile = __DIR__.'/tempFiles/image.jpeg';
-    $tempImage = TempImage::make(file_get_contents($imageFile), 'temp-filename.jpeg');
+    $tempImage = TempLocalImage::make(file_get_contents($imageFile), 'temp-filename.jpeg');
     expect($tempImage->mime())->toBe('image/jpeg');
 });
 
 it('can get the extension', function () {
     $imageFile = __DIR__.'/tempFiles/image.jpeg';
-    $tempImage = TempImage::make(file_get_contents($imageFile), 'temp-filename.jpeg');
+    $tempImage = TempLocalImage::make(file_get_contents($imageFile), 'temp-filename.jpeg');
     expect($tempImage->extension())->toBe('jpeg');
 });

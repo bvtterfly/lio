@@ -2,13 +2,13 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\TempImage;
+use Bvtterfly\Lio\Image;
 
 class Svgo extends BaseOptimizer
 {
     public string $binaryName = 'svgo';
 
-    public function canHandle(TempImage $image): bool
+    public function canHandle(Image $image): bool
     {
         if ($image->extension() !== 'svg') {
             return false;

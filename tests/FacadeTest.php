@@ -12,5 +12,5 @@ it('has a facade', function () {
     $imageDist = Storage::disk('images');
     $imageDist->put('test.jpeg', file_get_contents(__DIR__.'/tempFiles/image.jpeg'));
     ImageOptimizer::optimize('test.jpeg', 'opt-test.jpeg');
-    decreasedFileSize('opt-test.jpeg', 'test.jpeg');
+    decreasedFilesystemFileSize('opt-test.jpeg', 'test.jpeg');
 });

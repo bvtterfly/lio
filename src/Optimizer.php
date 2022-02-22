@@ -14,14 +14,14 @@ interface Optimizer
     /**
      * Determines if the given image can be handled by the optimizer.
      *
-     * @param TempImage $image
+     * @param Image $image
      *
      * @return bool
      */
-    public function canHandle(TempImage $image): bool;
+    public function canHandle(Image $image): bool;
 
     /**
-     * Set the path to the image that should be optimized.
+     * Sets the path to the image that should be optimized.
      *
      * @param string $imagePath
      *
@@ -30,7 +30,7 @@ interface Optimizer
     public function setImagePath(string $imagePath);
 
     /**
-     * Set the options the optimizer should use.
+     * Sets the options the optimizer should use.
      *
      * @param array $options
      *
@@ -39,7 +39,7 @@ interface Optimizer
     public function setOptions(array $options = []);
 
     /**
-     * Get the command that should be executed.
+     * Gets the command that should be executed.
      *
      * @return string
      */

@@ -2,6 +2,10 @@
 
 All notable changes to `lio` will be documented in this file.
 
+## 0.2.1 - 2022-02-23
+
+- Fix temp directory didn't delete bug
+
 ## 0.2.0 - 2022-02-22
 
 - Add `optimizeLocal ` method for optimizing local files

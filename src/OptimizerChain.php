@@ -91,8 +91,7 @@ class OptimizerChain
             $this->optimizeImage($pathToImage, $tempImage);
 
             $image->update($tempImage, $pathToOutput);
-
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         } finally {
             $tempImage->delete();

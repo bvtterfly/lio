@@ -87,11 +87,16 @@ class OptimizerChain
 
         $pathToImage = $tempImage->path();
 
-        $this->optimizeImage($pathToImage, $tempImage);
+        try {
+            $this->optimizeImage($pathToImage, $tempImage);
 
-        $image->update($tempImage, $pathToOutput);
+            $image->update($tempImage, $pathToOutput);
 
-        $tempImage->delete();
+        }catch (\Exception $e) {
+            throw $e;
+        } finally {
+            $tempImage->delete();
+        }
     }
 
     public function optimizeLocal(string $pathToImage, string $pathToOutput = null)

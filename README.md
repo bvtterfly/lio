@@ -208,7 +208,7 @@ WEBPs will be optimized by [Cwebp](https://developers.google.com/speed/webp/docs
 
 
 ## Usage
-You can resolve a configured instance of configured instance of `Bvtterfly\Lio\OptimizerChain` out of the container:
+You can resolve a configured instance of `Bvtterfly\Lio\OptimizerChain` out of the container:
 ```php
 use Bvtterfly\Lio\OptimizerChain;
 app(OptimizerChain::class)->optimize($pathToImage, $pathToOptimizedImage);

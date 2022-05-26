@@ -4,7 +4,7 @@ namespace Bvtterfly\Lio\Optimizers;
 
 use Bvtterfly\Lio\Image;
 
-class Optipng extends BaseOptimizer
+class Optipng extends WithOptionsOptimizer
 {
     public string $binaryName = 'optipng';
 

@@ -1,10 +1,12 @@
 <?php
-use Bvtterfly\Lio\Optimizers\Jpegoptim;
-use Bvtterfly\Lio\Optimizers\Pngquant;
-use Bvtterfly\Lio\Optimizers\Optipng;
-use Bvtterfly\Lio\Optimizers\Svgo;
-use Bvtterfly\Lio\Optimizers\Gifsicle;
+
 use Bvtterfly\Lio\Optimizers\Cwebp;
+use Bvtterfly\Lio\Optimizers\Gifsicle;
+use Bvtterfly\Lio\Optimizers\Jpegoptim;
+use Bvtterfly\Lio\Optimizers\Optipng;
+use Bvtterfly\Lio\Optimizers\Pngquant;
+use Bvtterfly\Lio\Optimizers\Svgo;
+use Bvtterfly\Lio\Optimizers\Svgo2;
 
 return [
     /*
@@ -24,46 +26,41 @@ return [
      * Optimizers are responsible for optimizing your image
      */
     'optimizers' => [
-        Jpegoptim::class => [
+        Jpegoptim::withOptions([
             '--max=85',
             '--strip-all',
             '--all-progressive',
-        ],
-        Pngquant::class => [
+        ]),
+        Pngquant::withOptions([
             '--quality=85',
             '--force',
             '--skip-if-larger',
-        ],
-        Optipng::class => [
+        ]),
+        Optipng::withOptions([
             '-i0',
             '-o2',
             '-quiet',
-        ],
-        Svgo::class => [
-            '--disable={cleanupIDs,removeViewBox}',
-        ],
-        Gifsicle::class => [
+        ]),
+//        Svgo::withOptions([
+//            '--disable={cleanupIDs,removeViewBox}',
+//        ]),
+        Svgo2::make(),
+        Gifsicle::withOptions([
             '-b',
             '-O3',
-        ],
-        Cwebp::class => [
+        ]),
+        Cwebp::withOptions([
             '-m 6',
             '-pass 10',
             '-mt',
             '-q 80',
-        ]
+        ]),
     ],
 
     /*
     * The maximum time in seconds each optimizer is allowed to run separately.
     */
     'timeout' => 60,
-
-    /*
-    * The directory where your binaries are stored.
-    * Only use this when you binaries are not accessible in the global environment.
-    */
-    'binary_path' => '',
 
     /*
     * The directory where the temporary files will be stored.

@@ -4,7 +4,7 @@ namespace Bvtterfly\Lio\Optimizers;
 
 use Bvtterfly\Lio\Image;
 
-class Gifsicle extends BaseOptimizer
+class Gifsicle extends WithOptionsOptimizer
 {
     public string $binaryName = 'gifsicle';
 

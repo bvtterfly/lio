@@ -49,12 +49,13 @@ php artisan vendor:publish --tag="lio-config"
 This is the contents of the published config file:
 
 ```php
-use Bvtterfly\Lio\Optimizers\Jpegoptim;
-use Bvtterfly\Lio\Optimizers\Pngquant;
-use Bvtterfly\Lio\Optimizers\Optipng;
-use Bvtterfly\Lio\Optimizers\Svgo;
-use Bvtterfly\Lio\Optimizers\Gifsicle;
 use Bvtterfly\Lio\Optimizers\Cwebp;
+use Bvtterfly\Lio\Optimizers\Gifsicle;
+use Bvtterfly\Lio\Optimizers\Jpegoptim;
+use Bvtterfly\Lio\Optimizers\Optipng;
+use Bvtterfly\Lio\Optimizers\Pngquant;
+use Bvtterfly\Lio\Optimizers\Svgo;
+use Bvtterfly\Lio\Optimizers\Svgo2;
 
 return [
     /*
@@ -74,46 +75,42 @@ return [
      * Optimizers are responsible for optimizing your image
      */
     'optimizers' => [
-        Jpegoptim::class => [
+        Jpegoptim::withOptions([
             '--max=85',
             '--strip-all',
             '--all-progressive',
-        ],
-        Pngquant::class => [
+        ]),
+        Pngquant::withOptions([
             '--quality=85',
             '--force',
             '--skip-if-larger',
-        ],
-        Optipng::class => [
+        ]),
+        Optipng::withOptions([
             '-i0',
             '-o2',
             '-quiet',
-        ],
-        Svgo::class => [
-            '--disable={cleanupIDs,removeViewBox}',
-        ],
-        Gifsicle::class => [
+        ]),
+//        Svgo::withOptions([
+//            '--disable={cleanupIDs,removeViewBox}',
+//        ]),
+        Svgo2::make(),
+
+        Gifsicle::withOptions([
             '-b',
             '-O3',
-        ],
-        Cwebp::class => [
+        ]),
+        Cwebp::withOptions([
             '-m 6',
             '-pass 10',
             '-mt',
             '-q 80',
-        ]
+        ]),
     ],
 
     /*
     * The maximum time in seconds each optimizer is allowed to run separately.
     */
     'timeout' => 60,
-
-    /*
-    * The directory where your binaries are stored.
-    * Only use this when you binaries are not accessible in the global environment.
-    */
-    'binary_path' => '',
 
     /*
     * The directory where the temporary files will be stored.
@@ -129,7 +126,7 @@ The package will use these optimizers if they are present on your system:
 - [JpegOptim](http://freecode.com/projects/jpegoptim)
 - [Optipng](http://optipng.sourceforge.net/)
 - [Pngquant 2](https://pngquant.org/)
-- [SVGO 1](https://github.com/svg/svgo)
+- [SVGO 2](https://github.com/svg/svgo)
 - [Gifsicle](http://www.lcdf.org/gifsicle/)
 - [cwebp](https://developers.google.com/speed/webp/docs/precompiled)
 
@@ -139,7 +136,7 @@ Here's how to install all the optimizers on Ubuntu:
 sudo apt-get install jpegoptim
 sudo apt-get install optipng
 sudo apt-get install pngquant
-sudo npm install -g svgo@1.3.2
+sudo npm install -g svgo@2.8.x
 sudo apt-get install gifsicle
 sudo apt-get install webp
 ```
@@ -150,7 +147,7 @@ And here's how to install the binaries on MacOS (using [Homebrew](https://brew.s
 brew install jpegoptim
 brew install optipng
 brew install pngquant
-npm install -g svgo@1.3.2
+npm install -g svgo@2.8.x
 brew install gifsicle
 brew install webp
 ```
@@ -161,7 +158,7 @@ sudo dnf install epel-release
 sudo dnf install jpegoptim
 sudo dnf install optipng
 sudo dnf install pngquant
-sudo npm install -g svgo@1.3.2
+sudo npm install -g svgo@2.8.x
 sudo dnf install gifsicle
 sudo dnf install libwebp-tools
 ```
@@ -185,11 +182,24 @@ PNGs will be made smaller by running them through two tools. The first one is [P
 
 ### SVGs
 
-SVGs will be minified by [SVGO 1](https://github.com/svg/svgo). SVGO's default configuration will be used, with the omission of the `cleanupIDs` plugin because that one is known to cause troubles when displaying multiple optimized SVGs on one page.
+SVGs will be minified by [SVGO 2](https://github.com/svg/svgo). SVGO's default configuration will be used, with the omission of the `cleanupIDs` plugin because that one is known to cause troubles when displaying multiple optimized SVGs on one page.
 
 Please be aware that SVGO can break your svg. You'll find more info on that in this [excellent blogpost](https://www.sarasoueidan.com/blog/svgo-tools/) by [Sara Soueidan](https://twitter.com/SaraSoueidan).
 
-For now, the default configuration used for SVGO is only compatible with SVGO 1.x. To use options compatible with SVGO 2.x, you need to [create your own optimization chain](#creating-your-own-optimization-chains).
+The default SVGO optimizer (`Svgo2`) is only compatible with SVGO `2.x`. For custom SVGO configuration, you must create [your configuration file](https://github.com/svg/svgo#configuration) and pass its path as the first argument of the `Svgo2` optimizer in your config file:
+
+```php
+Svgo2::make('/path/to/your/svgo/config.js')
+```
+
+If you installed SVGO `1.x` and can't upgrade to `2.x`, You can uncomment the `Svgo` optimizer in the config file:
+
+```php
+Svgo::withOptions([
+    '--disable={cleanupIDs,removeViewBox}',
+]),
+//  Svgo2::make(),
+```
 
 ### GIFs
 
@@ -205,6 +215,18 @@ WEBPs will be optimized by [Cwebp](https://developers.google.com/speed/webp/docs
 - `-q 90` Quality factor that brings the least noticeable changes.
 
 (Settings are original taken from [here](https://medium.com/@vinhlh/how-i-apply-webp-for-optimizing-images-9b11068db349))
+
+#### Set Binary Path
+
+If your binaries are not accessible in the global environment, You can set them using `setBinaryPath` method available on all default optimizers:
+
+```php
+Jpegoptim::withOptions([
+    '--max=85',
+    '--strip-all',
+    '--all-progressive',
+])->setBinaryPath('/path/to/your/jpegoptim/')
+```
 
 
 ## Usage
@@ -246,17 +268,8 @@ Route::middleware(OptimizeUploadedImages::class)->group(function () {
 If you want to write your optimizer and optimize your images using another command-line utility, write your optimizer. An optimizer is any class that implements the `Bvtterfly\Lio\Optimizer` interface:
 
 ```php
-namespace Bvtterfly\Lio;
-
 interface Optimizer
 {
-    /**
-     * Returns the name of the binary to be executed.
-     *
-     * @return string
-     */
-    public function binaryName(): string;
-
     /**
      * Determines if the given image can be handled by the optimizer.
      *
@@ -271,18 +284,9 @@ interface Optimizer
      *
      * @param string $imagePath
      *
-     * @return $this
+     * @return Optimizer
      */
-    public function setImagePath(string $imagePath);
-
-    /**
-     * Sets the options the optimizer should use.
-     *
-     * @param array $options
-     *
-     * @return $this
-     */
-    public function setOptions(array $options = []);
+    public function setImagePath(string $imagePath): Optimizer;
 
     /**
      * Gets the command that should be executed.

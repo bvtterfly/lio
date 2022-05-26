@@ -1,6 +1,7 @@
 <?php
 
 use Bvtterfly\Lio\DummyLogger;
+use Bvtterfly\Lio\Exceptions\InvalidConfiguration;
 use Bvtterfly\Lio\OptimizerChain;
 use Bvtterfly\Lio\OptimizerChainFactory;
 use Bvtterfly\Lio\Optimizers\Jpegoptim;
@@ -30,7 +31,7 @@ it('create optimizer chain with configured optimizers', function () {
         ->toHaveCount(0)
     ;
 
-    Config::set('lio.optimizers', [Jpegoptim::class => []]);
+    Config::set('lio.optimizers', [Jpegoptim::withOptions()]);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getOptimizers())
         ->toHaveCount(1)
@@ -46,7 +47,7 @@ it('create optimizer chain with configured filesystem disk', function () {
         ->toBeInstanceOf(Filesystem::class)
     ;
 
-    Config::set('lio.optimizers', [Jpegoptim::class => []]);
+    Config::set('lio.optimizers', [Jpegoptim::class]);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getOptimizers())
         ->toHaveCount(1)
@@ -57,11 +58,11 @@ it('create optimizer chain with configured filesystem disk', function () {
 });
 
 it('will throw an exception with a misconfigured optimizer', function () {
-    Config::set('lio.optimizers', [stdClass::class => []]);
+    Config::set('lio.optimizers', [stdClass::class]);
     app(OptimizerChain::class);
-})->throws(\Bvtterfly\Lio\Exceptions\InvalidConfiguration::class);
+})->throws(InvalidConfiguration::class);
 
 it('will throw an exception with a misconfigured logger', function () {
     Config::set('lio.log_optimizer_activity', stdClass::class);
     app(OptimizerChain::class);
-})->throws(\Bvtterfly\Lio\Exceptions\InvalidConfiguration::class);
+})->throws(InvalidConfiguration::class);

@@ -4,7 +4,7 @@ namespace Bvtterfly\Lio\Optimizers;
 
 use Bvtterfly\Lio\Image;
 
-class Jpegoptim extends BaseOptimizer
+class Jpegoptim extends WithOptionsOptimizer
 {
     public string $binaryName = 'jpegoptim';
 

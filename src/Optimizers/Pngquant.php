@@ -4,7 +4,7 @@ namespace Bvtterfly\Lio\Optimizers;
 
 use Bvtterfly\Lio\Image;
 
-class Pngquant extends BaseOptimizer
+class Pngquant extends WithOptionsOptimizer
 {
     public string $binaryName = 'pngquant';
 

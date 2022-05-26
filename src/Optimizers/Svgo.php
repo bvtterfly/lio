@@ -4,7 +4,7 @@ namespace Bvtterfly\Lio\Optimizers;
 
 use Bvtterfly\Lio\Image;
 
-class Svgo extends BaseOptimizer
+class Svgo extends WithOptionsOptimizer
 {
     public string $binaryName = 'svgo';
 

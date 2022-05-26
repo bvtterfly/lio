@@ -4,7 +4,7 @@ namespace Bvtterfly\Lio\Optimizers;
 
 use Bvtterfly\Lio\Image;
 
-class Cwebp extends BaseOptimizer
+class Cwebp extends WithOptionsOptimizer
 {
     public string $binaryName = 'cwebp';
 

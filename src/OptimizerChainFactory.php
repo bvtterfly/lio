@@ -3,7 +3,6 @@
 namespace Bvtterfly\Lio;
 
 use Bvtterfly\Lio\Exceptions\InvalidConfiguration;
-use Bvtterfly\Lio\Optimizers\BaseOptimizer;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Log\LogManager;
@@ -52,31 +51,22 @@ class OptimizerChainFactory
     private static function getOptimizers(array $config): array
     {
         return collect($config['optimizers'])
-            ->mapWithKeys(function (array $options, string $optimizerClass) use ($config) {
-                if (! is_a($optimizerClass, Optimizer::class, true)) {
+            ->map(function (mixed $optimizer) {
+                if (
+                    ! is_a($optimizer, Optimizer::class, true)
+                ) {
+                    $optimizerClass = is_object($optimizer) ? get_class($optimizer) : $optimizer;
+
                     throw InvalidConfiguration::notAnOptimizer($optimizerClass);
                 }
 
-                // Initialize optimizer class
-                $newOptimizerClass = new $optimizerClass();
-
-                if (
-                    is_a($newOptimizerClass, BaseOptimizer::class, true) &&
-                    self::getBinaryPath($config)
-                ) {
-                    $newOptimizerClass->setBinaryPath(self::getBinaryPath($config));
+                if (is_string($optimizer)) {
+                    $optimizer = app()->make($optimizer);
                 }
 
-                $newOptimizerClass->setOptions($options);
-
-                return [$optimizerClass => $newOptimizerClass];
+                return $optimizer;
             })
             ->toArray();
-    }
-
-    private static function getBinaryPath(array $config): string
-    {
-        return $config['binary_dir_path'] ?? '';
     }
 
     private static function getFilesystem(array $config): Filesystem

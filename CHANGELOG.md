@@ -2,6 +2,11 @@
 
 All notable changes to `lio` will be documented in this file.
 
+## 1.0.0 - 2022-05-26
+
+- 💥  Refactor Optimizers
+- ⬆️  Support for SVGO `2.x`
+
 ## 0.2.1 - 2022-02-23
 
 - Fix temp directory didn't delete bug

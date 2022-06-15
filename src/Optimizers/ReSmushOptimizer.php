@@ -5,6 +5,7 @@ namespace Bvtterfly\Lio\Optimizers;
 use Bvtterfly\Lio\Contracts\HasConfig;
 use Bvtterfly\Lio\Contracts\Image;
 use Bvtterfly\Lio\Contracts\Optimizer;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
@@ -69,7 +70,7 @@ class ReSmushOptimizer implements Optimizer, HasConfig
         return $this;
     }
 
-    private function upload(): Response
+    private function upload(): ?Response
     {
         $file = fopen($this->imagePath, 'r');
 
@@ -78,11 +79,13 @@ class ReSmushOptimizer implements Optimizer, HasConfig
             'exif' => $this->getExif(),
         ]);
 
-        return Http::attach(
-            'files',
-            $file,
-            basename($this->imagePath)
-        )->timeout($this->timeout)->retry($this->getRetry())->post(self::ENDPOINT.'?'.$params);
+        return rescue(
+            fn () => Http::attach('files', $file, basename($this->imagePath))
+                                   ->timeout($this->timeout)
+                                   ->retry($this->getRetry())
+                                   ->post(self::ENDPOINT.'?'.$params),
+            fn ($e) => $e instanceof RequestException ? $e->response : null
+        );
     }
 
     public function run(): void
@@ -91,7 +94,7 @@ class ReSmushOptimizer implements Optimizer, HasConfig
 
         $result = $this->upload();
 
-        if (! $result->successful()) {
+        if (! $result?->successful()) {
             $this->logger?->error('Failed to upload image: ' . $result->body());
 
             return;
@@ -103,14 +106,17 @@ class ReSmushOptimizer implements Optimizer, HasConfig
 
         $destinationPath = Arr::get($json, 'dest');
 
-        $downloadResponse = Http::timeout($this->timeout)->retry($this->getRetry())->get($destinationPath);
+        $downloadResponse = rescue(
+            fn () => Http::timeout($this->timeout)->retry($this->getRetry())->get($destinationPath),
+            fn ($e) => $e instanceof RequestException ? $e->response : null
+        );
 
-        if ($downloadResponse->successful()) {
+        if ($downloadResponse?->successful()) {
             file_put_contents($this->imagePath, $downloadResponse->body());
             $this->logger->info('Image Optimized successfully');
         } else {
             $this->logger->error('Failed to download image from: '. $destinationPath);
-            $this->logger->error('Error: '. $downloadResponse->body());
+            $this->logger->error('Error: '. $downloadResponse?->body());
         }
     }
 

@@ -292,7 +292,7 @@ Route::middleware(OptimizeUploadedImages::class)->group(function () {
 
 ### Writing a custom optimizers
 
-If you want to write your optimizer and optimize your images using another command-line utility, write your optimizer. An optimizer is any class that implements the `Bvtterfly\Lio\Contracts` interface:
+You may want to write your own optimizer to optimize your images via other utilities. An optimizer is any class that implements the `Bvtterfly\Lio\Contracts\Optimizer` interface:
 
 ```php
 use Psr\Log\LoggerInterface;

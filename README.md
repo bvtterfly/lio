@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/bvtterfly/lio/Check%20&%20fix%20styling?label=code%20style)](https://github.com/bvtterfly/lio/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/bvtterfly/lio?style=flat-square)](https://packagist.org/packages/bvtterfly/lio)
 
-Lio can optimize PNGs, JPGs, SVGs, and GIFs by running them through a chain of various [image optimization tools](https://github.com/bvtterfly/lio#optimization-tools).
+Lio can optimize PNGs, JPGs, SVGs, and GIFs by running them through a chain of various [image optimization tools](https://github.com/bvtterfly/lio#command-line-optimization-tools).
 
 This package is heavily based on `Spatie`'s `spatie/image-optimizer` and `spatie/laravel-image-optimizer` packages and can optimize local images like them.
 In addition, It optimizes images stored on the Laravel filesystem disks.
@@ -54,6 +54,7 @@ use Bvtterfly\Lio\Optimizers\Gifsicle;
 use Bvtterfly\Lio\Optimizers\Jpegoptim;
 use Bvtterfly\Lio\Optimizers\Optipng;
 use Bvtterfly\Lio\Optimizers\Pngquant;
+use Bvtterfly\Lio\Optimizers\ReSmushOptimizer;
 use Bvtterfly\Lio\Optimizers\Svgo;
 use Bvtterfly\Lio\Optimizers\Svgo2;
 
@@ -104,6 +105,20 @@ return [
 //        Svgo::class => [
 //            '--disable={cleanupIDs,removeViewBox}',
 //        ],
+//        ReSmushOptimizer::class => [
+//            'quality' => 92,
+//            'retry' => 3,
+//            'mime' => [
+//                'image/png',
+//                'image/jpeg',
+//                'image/gif',
+//                'image/bmp',
+//                'image/tiff',
+//            ],
+//
+//            'exif' => false,
+//
+//        ],
     ],
 
     /*
@@ -132,7 +147,7 @@ return [
 
 ];
 ```
-### Optimization tools
+### Command-Line Optimization tools
 
 The package will use these optimizers if they are present on your system:
 
@@ -175,6 +190,7 @@ sudo npm install -g svgo@2.8.x
 sudo dnf install gifsicle
 sudo dnf install libwebp-tools
 ```
+> If You can't install and use above optimizers, You can still optimize your images using [reSmush Optimizer](https://github.com/bvtterfly/lio#resmush-optimizer).
 
 ## Which tools will do what?
 
@@ -234,6 +250,10 @@ WEBPs will be optimized by [Cwebp](https://developers.google.com/speed/webp/docs
 #### Set Binary Path
 
 If your binaries are not accessible in the global environment, You can set them using `binaries_path` option in the config file.
+
+### reSmush Optimizer
+
+When you can't install command-line optimizer tools, you can comment them on the config file to disable them and uncomment the reSumsh optimizer to enable it. [reSmush](https://resmush.it/) provides a free API for optimizing images. However, it can only optimize up to 5MB of PNG, JPG, GIF, BMP, and TIF images.
 
 
 ## Usage

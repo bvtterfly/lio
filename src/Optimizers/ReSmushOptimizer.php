@@ -101,11 +101,17 @@ class ReSmushOptimizer implements Optimizer, HasConfig
 
         $this->logger?->info('Downloading optimized image from reSmush');
 
-        $image = file_get_contents(Arr::get($json, 'dest'));
+        $destinationPath = Arr::get($json, 'dest');
 
-        file_put_contents($this->imagePath, $image);
+        $downloadResponse = Http::timeout($this->timeout)->retry($this->getRetry())->get($destinationPath);
 
-        $this->logger->info('Image Optimized successfully');
+        if ($downloadResponse->successful()) {
+            file_put_contents($this->imagePath, $downloadResponse->body());
+            $this->logger->info('Image Optimized successfully');
+        } else {
+            $this->logger->error('Failed to download image from: '. $destinationPath);
+            $this->logger->error('Error: '. $downloadResponse->body());
+        }
     }
 
     public function setConfig(array $config = [])

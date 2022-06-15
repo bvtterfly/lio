@@ -2,9 +2,9 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\Image;
+use Bvtterfly\Lio\Contracts\Image;
 
-class Pngquant extends WithOptionsOptimizer
+class Pngquant extends WithArgumentsOptimizer
 {
     public string $binaryName = 'pngquant';
 
@@ -15,9 +15,7 @@ class Pngquant extends WithOptionsOptimizer
 
     public function getCommand(): string
     {
-        $optionString = implode(' ', $this->options);
-
-        return "\"{$this->binaryPath}{$this->binaryName}\" {$optionString}"
+        return "\"{$this->getBinaryPath()}{$this->binaryName}\" {$this->getArgumentString()}"
             .' '.escapeshellarg($this->imagePath)
             .' --output='.escapeshellarg($this->imagePath);
     }

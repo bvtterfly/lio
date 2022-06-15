@@ -2,9 +2,9 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\Image;
+use Bvtterfly\Lio\Contracts\Image;
 
-class Jpegoptim extends WithOptionsOptimizer
+class Jpegoptim extends WithArgumentsOptimizer
 {
     public string $binaryName = 'jpegoptim';
 

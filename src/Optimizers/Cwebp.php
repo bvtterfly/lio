@@ -2,9 +2,9 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\Image;
+use Bvtterfly\Lio\Contracts\Image;
 
-class Cwebp extends WithOptionsOptimizer
+class Cwebp extends WithArgumentsOptimizer
 {
     public string $binaryName = 'cwebp';
 
@@ -15,9 +15,7 @@ class Cwebp extends WithOptionsOptimizer
 
     public function getCommand(): string
     {
-        $optionString = implode(' ', $this->options);
-
-        return "\"{$this->binaryPath}{$this->binaryName}\" {$optionString}"
+        return "\"{$this->getBinaryPath()}{$this->binaryName}\" {$this->getArgumentString()}"
             .' '.escapeshellarg($this->imagePath)
             .' -o '.escapeshellarg($this->imagePath);
     }

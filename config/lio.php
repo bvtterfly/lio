@@ -26,41 +26,55 @@ return [
      * Optimizers are responsible for optimizing your image
      */
     'optimizers' => [
-        Jpegoptim::withOptions([
+        Jpegoptim::class => [
             '--max=85',
             '--strip-all',
             '--all-progressive',
-        ]),
-        Pngquant::withOptions([
+        ],
+        Pngquant::class => [
             '--quality=85',
             '--force',
             '--skip-if-larger',
-        ]),
-        Optipng::withOptions([
+        ],
+        Optipng::class => [
             '-i0',
             '-o2',
             '-quiet',
-        ]),
-//        Svgo::withOptions([
-//            '--disable={cleanupIDs,removeViewBox}',
-//        ]),
-        Svgo2::make(),
-        Gifsicle::withOptions([
+        ],
+        Svgo2::class => [],
+        Gifsicle::class => [
             '-b',
             '-O3',
-        ]),
-        Cwebp::withOptions([
+        ],
+        Cwebp::class => [
             '-m 6',
             '-pass 10',
             '-mt',
             '-q 80',
-        ]),
+        ],
+//        Svgo::class => [
+//            '--disable={cleanupIDs,removeViewBox}',
+//        ],
     ],
 
     /*
     * The maximum time in seconds each optimizer is allowed to run separately.
     */
     'timeout' => 60,
+
+    /*
+    * The directories where your binaries are stored.
+    * Only use this when your binaries are not accessible in the global environment.
+    */
+    'binaries_path' => [
+        'jpegoptim' => '',
+        'optipng' => '',
+        'pngquant' => '',
+        'svgo' => '',
+        'gifsicle' => '',
+        'cwebp' => '',
+    ],
+
 
     /*
     * The directory where the temporary files will be stored.

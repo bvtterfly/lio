@@ -2,23 +2,12 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\Image;
+use Bvtterfly\Lio\Contracts\Image;
+use Illuminate\Support\Arr;
 
-class Svgo2 extends BaseOptimizer
+class Svgo2 extends WithConfigOptimizer
 {
     public string $binaryName = 'svgo';
-
-    public string $configPath = '';
-
-    public function __construct(string $configPath = null)
-    {
-        $this->configPath = $configPath ?? $this->getDefaultConfigPath();
-    }
-
-    public static function make(string $configPath = null)
-    {
-        return new self($configPath);
-    }
 
     public function canHandle(Image $image): bool
     {
@@ -36,15 +25,20 @@ class Svgo2 extends BaseOptimizer
 
     public function getCommand(): string
     {
-        return "\"{$this->binaryPath}{$this->binaryName}\""
-            .' --config '.escapeshellarg($this->configPath)
+        return "\"{$this->getBinaryPath()}{$this->binaryName}\""
+            .' --config '.escapeshellarg($this->getConfigPath())
             .' '.escapeshellarg($this->imagePath)
             .' -o '.escapeshellarg($this->imagePath);
     }
 
-    private function getDefaultConfigPath()
+    private function getConfigPath()
     {
-        return join(DIRECTORY_SEPARATOR, [
+        return Arr::get($this->config, 'path') ?? $this->getDefaultConfigPath();
+    }
+
+    private function getDefaultConfigPath(): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [
             __DIR__,
             '..',
             '..',

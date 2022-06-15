@@ -2,6 +2,10 @@
 
 All notable changes to `lio` will be documented in this file.
 
+## 2.0.1 - 2022-06-15
+
+- 🐛 Fix reSmush optimizer bugs
+
 ## 2.0.0 - 2022-06-15
 
 - 💥 Refactor optimizers and change the config file

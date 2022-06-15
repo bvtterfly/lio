@@ -75,42 +75,55 @@ return [
      * Optimizers are responsible for optimizing your image
      */
     'optimizers' => [
-        Jpegoptim::withOptions([
+        Jpegoptim::class => [
             '--max=85',
             '--strip-all',
             '--all-progressive',
-        ]),
-        Pngquant::withOptions([
+        ],
+        Pngquant::class => [
             '--quality=85',
             '--force',
             '--skip-if-larger',
-        ]),
-        Optipng::withOptions([
+        ],
+        Optipng::class => [
             '-i0',
             '-o2',
             '-quiet',
-        ]),
-//        Svgo::withOptions([
-//            '--disable={cleanupIDs,removeViewBox}',
-//        ]),
-        Svgo2::make(),
-
-        Gifsicle::withOptions([
+        ],
+        Svgo2::class => [],
+        Gifsicle::class => [
             '-b',
             '-O3',
-        ]),
-        Cwebp::withOptions([
+        ],
+        Cwebp::class => [
             '-m 6',
             '-pass 10',
             '-mt',
             '-q 80',
-        ]),
+        ],
+//        Svgo::class => [
+//            '--disable={cleanupIDs,removeViewBox}',
+//        ],
     ],
 
     /*
     * The maximum time in seconds each optimizer is allowed to run separately.
     */
     'timeout' => 60,
+
+    /*
+    * The directories where your binaries are stored.
+    * Only use this when your binaries are not accessible in the global environment.
+    */
+    'binaries_path' => [
+        'jpegoptim' => '',
+        'optipng' => '',
+        'pngquant' => '',
+        'svgo' => '',
+        'gifsicle' => '',
+        'cwebp' => '',
+    ],
+
 
     /*
     * The directory where the temporary files will be stored.
@@ -186,19 +199,21 @@ SVGs will be minified by [SVGO 2](https://github.com/svg/svgo). SVGO's default c
 
 Please be aware that SVGO can break your svg. You'll find more info on that in this [excellent blogpost](https://www.sarasoueidan.com/blog/svgo-tools/) by [Sara Soueidan](https://twitter.com/SaraSoueidan).
 
-The default SVGO optimizer (`Svgo2`) is only compatible with SVGO `2.x`. For custom SVGO configuration, you must create [your configuration file](https://github.com/svg/svgo#configuration) and pass its path as the first argument of the `Svgo2` optimizer in your config file:
+The default SVGO optimizer (`Svgo2`) is only compatible with SVGO `2.x`. For custom SVGO configuration, you must create [your configuration file](https://github.com/svg/svgo#configuration) and pass its path to the config array:
 
 ```php
-Svgo2::make('/path/to/your/svgo/config.js')
+Svgo2::class => [
+    'path' => '/path/to/your/svgo/config.js'
+]
 ```
 
 If you installed SVGO `1.x` and can't upgrade to `2.x`, You can uncomment the `Svgo` optimizer in the config file:
 
 ```php
-Svgo::withOptions([
+Svgo::class => [
     '--disable={cleanupIDs,removeViewBox}',
-]),
-//  Svgo2::make(),
+],
+// Svgo2::class => [],
 ```
 
 ### GIFs
@@ -218,15 +233,7 @@ WEBPs will be optimized by [Cwebp](https://developers.google.com/speed/webp/docs
 
 #### Set Binary Path
 
-If your binaries are not accessible in the global environment, You can set them using `setBinaryPath` method available on all default optimizers:
-
-```php
-Jpegoptim::withOptions([
-    '--max=85',
-    '--strip-all',
-    '--all-progressive',
-])->setBinaryPath('/path/to/your/jpegoptim/')
-```
+If your binaries are not accessible in the global environment, You can set them using `binaries_path` option in the config file.
 
 
 ## Usage
@@ -265,9 +272,11 @@ Route::middleware(OptimizeUploadedImages::class)->group(function () {
 
 ### Writing a custom optimizers
 
-If you want to write your optimizer and optimize your images using another command-line utility, write your optimizer. An optimizer is any class that implements the `Bvtterfly\Lio\Optimizer` interface:
+If you want to write your optimizer and optimize your images using another command-line utility, write your optimizer. An optimizer is any class that implements the `Bvtterfly\Lio\Contracts` interface:
 
 ```php
+use Psr\Log\LoggerInterface;
+
 interface Optimizer
 {
     /**
@@ -286,14 +295,32 @@ interface Optimizer
      *
      * @return Optimizer
      */
-    public function setImagePath(string $imagePath): Optimizer;
+    public function setImagePath(string $imagePath): self;
 
     /**
-     * Gets the command that should be executed.
+     * Sets the logger for logging optimization process.
      *
-     * @return string
+     * @param  LoggerInterface  $logger
+     *
+     * @return Optimizer
      */
-    public function getCommand(): string;
+    public function setLogger(LoggerInterface $logger): self;
+
+    /**
+     * Sets the amount of seconds optimizer may use.
+     *
+     * @param  int  $timeout
+     *
+     * @return Optimizer
+     */
+    public function setTimeout(int $timeout): self;
+
+    /**
+     * Runs the optimizer.
+     *
+     * @return void
+     */
+    public function run(): void;
 }
 ```
 

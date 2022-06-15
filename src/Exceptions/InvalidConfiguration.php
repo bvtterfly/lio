@@ -2,7 +2,7 @@
 
 namespace Bvtterfly\Lio\Exceptions;
 
-use Bvtterfly\Lio\Optimizer;
+use Bvtterfly\Lio\Contracts\Optimizer;
 use Exception;
 use Psr\Log\LoggerInterface;
 

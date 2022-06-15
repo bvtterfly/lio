@@ -1,6 +1,6 @@
 <?php
 
-namespace Bvtterfly\Lio;
+namespace Bvtterfly\Lio\Contracts;
 
 interface Image
 {

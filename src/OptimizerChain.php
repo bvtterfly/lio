@@ -2,9 +2,10 @@
 
 namespace Bvtterfly\Lio;
 
+use Bvtterfly\Lio\Contracts\Image;
+use Bvtterfly\Lio\Contracts\Optimizer;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Process\Process;
 
 class OptimizerChain
 {
@@ -121,11 +122,11 @@ class OptimizerChain
         $this->logger->info("Start optimizing {$pathToImage}");
 
         foreach ($this->optimizers as $optimizer) {
-            $this->applyOptimizer($optimizer, $image);
+            $this->runOptimizer($optimizer, $image);
         }
     }
 
-    protected function applyOptimizer(Optimizer $optimizer, Image $image)
+    protected function runOptimizer(Optimizer $optimizer, Image $image)
     {
         if (! $optimizer->canHandle($image)) {
             return;
@@ -136,28 +137,9 @@ class OptimizerChain
         $this->logger->info("Using optimizer: `{$optimizerClass}`");
 
         $optimizer->setImagePath($image->path());
+        $optimizer->setTimeout($this->timeout);
+        $optimizer->setLogger($this->logger);
 
-        $command = $optimizer->getCommand();
-
-        $this->logger->info("Executing `{$command}`");
-
-        $process = Process::fromShellCommandline($command);
-
-        $process
-            ->setTimeout($this->timeout)
-            ->run();
-
-        $this->logResult($process);
-    }
-
-    protected function logResult(Process $process)
-    {
-        if (! $process->isSuccessful()) {
-            $this->logger->error("Process errored with `{$process->getErrorOutput()}`");
-
-            return;
-        }
-
-        $this->logger->info("Process successfully ended with output `{$process->getOutput()}`");
+        $optimizer->run();
     }
 }

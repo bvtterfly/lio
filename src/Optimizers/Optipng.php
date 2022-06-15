@@ -2,9 +2,9 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\Image;
+use Bvtterfly\Lio\Contracts\Image;
 
-class Optipng extends WithOptionsOptimizer
+class Optipng extends WithArgumentsOptimizer
 {
     public string $binaryName = 'optipng';
 

@@ -1,58 +1,56 @@
 <?php
 
 use Bvtterfly\Lio\Optimizers\Jpegoptim;
+use Illuminate\Support\Facades\Config;
 
 it('can accept options via the constructor', function () {
-    $optimizer = (Jpegoptim::withOptions(['option1', 'option2']))->setImagePath('my-image.jpg');
+    $optimizer = (new Jpegoptim(['option1', 'option2']))->setImagePath('my-image.jpg');
     expect($optimizer)
         ->getCommand()
-        ->toBe("\"jpegoptim\" option1 option2 'my-image.jpg'")
-    ;
+        ->toBe("\"jpegoptim\" option1 option2 'my-image.jpg'");
 });
 
 it('can set a binary path', function () {
-    $optimizer = Jpegoptim::withOptions()
-        ->setImagePath('my-image.jpg')
-        ->setBinaryPath('testPath');
+    Config::set('lio.binaries_path.jpegoptim', 'testPath');
+    $optimizer = (new Jpegoptim([]))
+        ->setImagePath('my-image.jpg');
 
     expect($optimizer)
         ->getCommand()
         ->toBe("\"testPath/jpegoptim\"  'my-image.jpg'");
 
-    $optimizer = Jpegoptim::withOptions()
-        ->setImagePath('my-image.jpg')
-        ->setBinaryPath('testPath/');
+    Config::set('lio.binaries_path.jpegoptim', 'testPath/');
+
+    $optimizer = (new Jpegoptim([]))
+        ->setImagePath('my-image.jpg');
 
     expect($optimizer)
         ->getCommand()
         ->toBe("\"testPath/jpegoptim\"  'my-image.jpg'");
 
-    $optimizer = Jpegoptim::withOptions()
-        ->setImagePath('my-image.jpg')
-        ->setBinaryPath('');
+    Config::set('lio.binaries_path.jpegoptim', '');
+    $optimizer = (new Jpegoptim([]))
+        ->setImagePath('my-image.jpg');
 
     expect($optimizer)
         ->getCommand()
         ->toBe("\"jpegoptim\"  'my-image.jpg'");
 });
 
-
-it('can override options', function () {
-    $optimizer = (new Jpegoptim(['option1', 'option2']))->setImagePath('my-image.jpg');
-    $optimizer->setOptions(['option3', 'option4']);
+it('can override arguments', function () {
+    $optimizer = (new Jpegoptim(['argument1', 'argument2']))->setImagePath('my-image.jpg');
+    $optimizer->setArguments(['argument3', '--argument4']);
     expect($optimizer)
         ->getCommand()
-        ->toBe("\"jpegoptim\" option3 option4 'my-image.jpg'")
-    ;
+        ->toBe("\"jpegoptim\" argument3 --argument4 'my-image.jpg'");
 });
 
 
 it('can get jpeg binary name', function () {
-    $optimizer = (new Jpegoptim(['option1', 'option2']))->setImagePath('my-image.jpg');
+    $optimizer = (new Jpegoptim())->setImagePath('my-image.jpg');
 
-    $optimizer->setOptions(['option3', 'option4']);
+    $optimizer->setArguments(['argument3', '--argument4']);
     expect($optimizer)
         ->binaryName()
-        ->toBe('jpegoptim')
-    ;
+        ->toBe('jpegoptim');
 });

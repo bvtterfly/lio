@@ -2,9 +2,9 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\Image;
+use Bvtterfly\Lio\Contracts\Image;
 
-class Gifsicle extends WithOptionsOptimizer
+class Gifsicle extends WithArgumentsOptimizer
 {
     public string $binaryName = 'gifsicle';
 
@@ -15,9 +15,7 @@ class Gifsicle extends WithOptionsOptimizer
 
     public function getCommand(): string
     {
-        $optionString = implode(' ', $this->options);
-
-        return "\"{$this->binaryPath}{$this->binaryName}\" {$optionString}"
+        return "\"{$this->getBinaryPath()}{$this->binaryName}\" {$this->getArgumentString()}"
             .' -i '.escapeshellarg($this->imagePath)
             .' -o '.escapeshellarg($this->imagePath);
     }

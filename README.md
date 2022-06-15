@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/bvtterfly/lio/Check%20&%20fix%20styling?label=code%20style)](https://github.com/bvtterfly/lio/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/bvtterfly/lio?style=flat-square)](https://packagist.org/packages/bvtterfly/lio)
 
-Lio can optimize PNGs, JPGs, SVGs, and GIFs by running them through a chain of various [image optimization tools](https://github.com/bvtterfly/lio#optimization-tools).
+Lio can optimize PNGs, JPGs, SVGs, and GIFs by running them through a chain of various [image optimization tools](https://github.com/bvtterfly/lio#command-line-optimization-tools).
 
 This package is heavily based on `Spatie`'s `spatie/image-optimizer` and `spatie/laravel-image-optimizer` packages and can optimize local images like them.
 In addition, It optimizes images stored on the Laravel filesystem disks.
@@ -54,6 +54,7 @@ use Bvtterfly\Lio\Optimizers\Gifsicle;
 use Bvtterfly\Lio\Optimizers\Jpegoptim;
 use Bvtterfly\Lio\Optimizers\Optipng;
 use Bvtterfly\Lio\Optimizers\Pngquant;
+use Bvtterfly\Lio\Optimizers\ReSmushOptimizer;
 use Bvtterfly\Lio\Optimizers\Svgo;
 use Bvtterfly\Lio\Optimizers\Svgo2;
 
@@ -75,36 +76,49 @@ return [
      * Optimizers are responsible for optimizing your image
      */
     'optimizers' => [
-        Jpegoptim::withOptions([
+        Jpegoptim::class => [
             '--max=85',
             '--strip-all',
             '--all-progressive',
-        ]),
-        Pngquant::withOptions([
+        ],
+        Pngquant::class => [
             '--quality=85',
             '--force',
             '--skip-if-larger',
-        ]),
-        Optipng::withOptions([
+        ],
+        Optipng::class => [
             '-i0',
             '-o2',
             '-quiet',
-        ]),
-//        Svgo::withOptions([
-//            '--disable={cleanupIDs,removeViewBox}',
-//        ]),
-        Svgo2::make(),
-
-        Gifsicle::withOptions([
+        ],
+        Svgo2::class => [],
+        Gifsicle::class => [
             '-b',
             '-O3',
-        ]),
-        Cwebp::withOptions([
+        ],
+        Cwebp::class => [
             '-m 6',
             '-pass 10',
             '-mt',
             '-q 80',
-        ]),
+        ],
+//        Svgo::class => [
+//            '--disable={cleanupIDs,removeViewBox}',
+//        ],
+//        ReSmushOptimizer::class => [
+//            'quality' => 92,
+//            'retry' => 3,
+//            'mime' => [
+//                'image/png',
+//                'image/jpeg',
+//                'image/gif',
+//                'image/bmp',
+//                'image/tiff',
+//            ],
+//
+//            'exif' => false,
+//
+//        ],
     ],
 
     /*
@@ -113,13 +127,27 @@ return [
     'timeout' => 60,
 
     /*
+    * The directories where your binaries are stored.
+    * Only use this when your binaries are not accessible in the global environment.
+    */
+    'binaries_path' => [
+        'jpegoptim' => '',
+        'optipng' => '',
+        'pngquant' => '',
+        'svgo' => '',
+        'gifsicle' => '',
+        'cwebp' => '',
+    ],
+
+
+    /*
     * The directory where the temporary files will be stored.
     */
     'temporary_directory' => storage_path('app/temp'),
 
 ];
 ```
-### Optimization tools
+### Command-Line Optimization tools
 
 The package will use these optimizers if they are present on your system:
 
@@ -162,6 +190,7 @@ sudo npm install -g svgo@2.8.x
 sudo dnf install gifsicle
 sudo dnf install libwebp-tools
 ```
+> If You can't install and use above optimizers, You can still optimize your images using [reSmush Optimizer](https://github.com/bvtterfly/lio#resmush-optimizer).
 
 ## Which tools will do what?
 
@@ -186,19 +215,21 @@ SVGs will be minified by [SVGO 2](https://github.com/svg/svgo). SVGO's default c
 
 Please be aware that SVGO can break your svg. You'll find more info on that in this [excellent blogpost](https://www.sarasoueidan.com/blog/svgo-tools/) by [Sara Soueidan](https://twitter.com/SaraSoueidan).
 
-The default SVGO optimizer (`Svgo2`) is only compatible with SVGO `2.x`. For custom SVGO configuration, you must create [your configuration file](https://github.com/svg/svgo#configuration) and pass its path as the first argument of the `Svgo2` optimizer in your config file:
+The default SVGO optimizer (`Svgo2`) is only compatible with SVGO `2.x`. For custom SVGO configuration, you must create [your configuration file](https://github.com/svg/svgo#configuration) and pass its path to the config array:
 
 ```php
-Svgo2::make('/path/to/your/svgo/config.js')
+Svgo2::class => [
+    'path' => '/path/to/your/svgo/config.js'
+]
 ```
 
 If you installed SVGO `1.x` and can't upgrade to `2.x`, You can uncomment the `Svgo` optimizer in the config file:
 
 ```php
-Svgo::withOptions([
+Svgo::class => [
     '--disable={cleanupIDs,removeViewBox}',
-]),
-//  Svgo2::make(),
+],
+// Svgo2::class => [],
 ```
 
 ### GIFs
@@ -218,15 +249,11 @@ WEBPs will be optimized by [Cwebp](https://developers.google.com/speed/webp/docs
 
 #### Set Binary Path
 
-If your binaries are not accessible in the global environment, You can set them using `setBinaryPath` method available on all default optimizers:
+If your binaries are not accessible in the global environment, You can set them using `binaries_path` option in the config file.
 
-```php
-Jpegoptim::withOptions([
-    '--max=85',
-    '--strip-all',
-    '--all-progressive',
-])->setBinaryPath('/path/to/your/jpegoptim/')
-```
+### reSmush Optimizer
+
+When you can't install command-line optimizer tools, you can comment them on the config file to disable them and uncomment the reSumsh optimizer to enable it. [reSmush](https://resmush.it/) provides a free API for optimizing images. However, it can only optimize up to 5MB of PNG, JPG, GIF, BMP, and TIF images.
 
 
 ## Usage
@@ -265,9 +292,11 @@ Route::middleware(OptimizeUploadedImages::class)->group(function () {
 
 ### Writing a custom optimizers
 
-If you want to write your optimizer and optimize your images using another command-line utility, write your optimizer. An optimizer is any class that implements the `Bvtterfly\Lio\Optimizer` interface:
+If you want to write your optimizer and optimize your images using another command-line utility, write your optimizer. An optimizer is any class that implements the `Bvtterfly\Lio\Contracts` interface:
 
 ```php
+use Psr\Log\LoggerInterface;
+
 interface Optimizer
 {
     /**
@@ -286,14 +315,32 @@ interface Optimizer
      *
      * @return Optimizer
      */
-    public function setImagePath(string $imagePath): Optimizer;
+    public function setImagePath(string $imagePath): self;
 
     /**
-     * Gets the command that should be executed.
+     * Sets the logger for logging optimization process.
      *
-     * @return string
+     * @param  LoggerInterface  $logger
+     *
+     * @return Optimizer
      */
-    public function getCommand(): string;
+    public function setLogger(LoggerInterface $logger): self;
+
+    /**
+     * Sets the amount of seconds optimizer may use.
+     *
+     * @param  int  $timeout
+     *
+     * @return Optimizer
+     */
+    public function setTimeout(int $timeout): self;
+
+    /**
+     * Runs the optimizer.
+     *
+     * @return void
+     */
+    public function run(): void;
 }
 ```
 

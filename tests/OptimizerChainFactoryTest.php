@@ -31,7 +31,7 @@ it('create optimizer chain with configured optimizers', function () {
         ->toHaveCount(0)
     ;
 
-    Config::set('lio.optimizers', [Jpegoptim::withOptions()]);
+    Config::set('lio.optimizers', [Jpegoptim::class => []]);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getOptimizers())
         ->toHaveCount(1)

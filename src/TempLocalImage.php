@@ -2,6 +2,7 @@
 
 namespace Bvtterfly\Lio;
 
+use Bvtterfly\Lio\Contracts\Image;
 use Illuminate\Support\Str;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 

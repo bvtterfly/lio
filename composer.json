@@ -18,10 +18,11 @@
     ],
     "require": {
         "php": "^8.0",
+        "ext-fileinfo": "*",
+        "guzzlehttp/guzzle": "^7.4",
         "illuminate/contracts": "^9.0",
         "spatie/laravel-package-tools": "^1.9.2",
-        "spatie/temporary-directory": "^2.0",
-        "ext-fileinfo": "*"
+        "spatie/temporary-directory": "^2.0"
     },
     "require-dev": {
         "nunomaduro/collision": "^6.0",

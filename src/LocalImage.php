@@ -2,6 +2,7 @@
 
 namespace Bvtterfly\Lio;
 
+use Bvtterfly\Lio\Contracts\Image;
 use InvalidArgumentException;
 
 class LocalImage implements Image

@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v3
         with:
-          node-version: 10
+          node-version: lts/*
       - name: Install tools
         run: sudo apt-get install jpegoptim
           && sudo apt-get install pngquant

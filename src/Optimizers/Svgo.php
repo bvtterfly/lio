@@ -2,9 +2,9 @@
 
 namespace Bvtterfly\Lio\Optimizers;
 
-use Bvtterfly\Lio\Image;
+use Bvtterfly\Lio\Contracts\Image;
 
-class Svgo extends WithOptionsOptimizer
+class Svgo extends WithArgumentsOptimizer
 {
     public string $binaryName = 'svgo';
 
@@ -24,9 +24,7 @@ class Svgo extends WithOptionsOptimizer
 
     public function getCommand(): string
     {
-        $optionString = implode(' ', $this->options);
-
-        return "\"{$this->binaryPath}{$this->binaryName}\" {$optionString}"
+        return "\"{$this->getBinaryPath()}{$this->binaryName}\" {$this->getArgumentString()}"
             .' --input='.escapeshellarg($this->imagePath)
             .' --output='.escapeshellarg($this->imagePath);
     }

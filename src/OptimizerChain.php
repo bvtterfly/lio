@@ -137,6 +137,7 @@ class OptimizerChain
         $this->logger->info("Using optimizer: `{$optimizerClass}`");
 
         $optimizer->setImagePath($image->path());
+        $optimizer->setTimeout($this->timeout);
         $optimizer->setLogger($this->logger);
 
         $optimizer->run();

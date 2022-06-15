@@ -5,6 +5,7 @@ use Bvtterfly\Lio\Optimizers\Gifsicle;
 use Bvtterfly\Lio\Optimizers\Jpegoptim;
 use Bvtterfly\Lio\Optimizers\Optipng;
 use Bvtterfly\Lio\Optimizers\Pngquant;
+use Bvtterfly\Lio\Optimizers\ReSmushOptimizer;
 use Bvtterfly\Lio\Optimizers\Svgo;
 use Bvtterfly\Lio\Optimizers\Svgo2;
 
@@ -54,6 +55,20 @@ return [
         ],
 //        Svgo::class => [
 //            '--disable={cleanupIDs,removeViewBox}',
+//        ],
+//        ReSmushOptimizer::class => [
+//            'quality' => 92,
+//            'retry' => 3,
+//            'mime' => [
+//                'image/png',
+//                'image/jpeg',
+//                'image/gif',
+//                'image/bmp',
+//                'image/tiff',
+//            ],
+//
+//            'exif' => false,
+//
 //        ],
     ],
 

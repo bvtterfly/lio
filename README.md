@@ -38,7 +38,7 @@ composer require bvtterfly/lio
 
 The package will automatically register itself.
 
-The package uses a bunch of binaries to optimize images. To learn which ones on how to install them, head over to the [optimization tools](https://github.com/bvtterfly/lio#optimization-tools) section.
+The package uses a bunch of binaries to optimize images. To learn which ones on how to install them, head over to the [image optimization tools](https://github.com/bvtterfly/lio#command-line-optimization-tools) section.
 
 The package comes with some sane defaults to optimize images. You can modify that configuration by publishing the config file.
 

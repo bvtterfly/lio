@@ -2,25 +2,30 @@
 
 use Bvtterfly\Lio\LocalImage;
 
+function getTempFilePath(string $filename): string
+{
+    return __DIR__.'/tempFiles/'.$filename;
+}
+
 it('can create a local image when file exist', function () {
-    $imageFilePath = __DIR__.'/tempFiles/image.jpeg';
+    $imageFilePath = getTempFilePath('image.jpeg');
     $image = new LocalImage($imageFilePath);
     expect($image->path())->toEqual(__DIR__.'/tempFiles/image.jpeg');
 });
 
 it('cant create a local image when file doesnt exist', function () {
-    $imageFilePath = __DIR__.'/tempFiles/test.png';
-    $image = new LocalImage($imageFilePath);
+    $imageFilePath = getTempFilePath('test.png');
+    new LocalImage($imageFilePath);
 })->throws(InvalidArgumentException::class);
 
 it('can get type mime type', function () {
-    $imageFilePath = __DIR__.'/tempFiles/image.jpeg';
+    $imageFilePath = getTempFilePath('image.jpeg');
     $image = new LocalImage($imageFilePath);
     expect($image->mime())->toBe('image/jpeg');
 });
 
 it('can get the extension', function () {
-    $imageFilePath = __DIR__.'/tempFiles/image.jpeg';
+    $imageFilePath = getTempFilePath('image.jpeg');
     $image = new LocalImage($imageFilePath);
     expect($image->extension())->toBe('jpeg');
 });

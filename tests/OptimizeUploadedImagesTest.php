@@ -15,6 +15,7 @@ it('will try to optimize all files in a request', function () {
     copy($originalImagePath, $uploadPath);
 
     Route::middleware(OptimizeUploadedImages::class)->post('/', function () {
+        return 'ok!';
     });
 
     $this->call('POST', '/', [], [], ['upload' => getUploadFile($uploadPath)]);
@@ -41,6 +42,7 @@ it('will optimize all files at all depths', function () {
     copy($originalImagePath3, $uploadPath3);
 
     Route::middleware(OptimizeUploadedImages::class)->post('/', function () {
+        return 'ok!';
     });
 
     $this->call('POST', '/', [], [], [

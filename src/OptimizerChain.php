@@ -78,7 +78,9 @@ class OptimizerChain
 
     public function optimize(string $pathToImage, string $pathToOutput)
     {
-        $image = FilesystemImage::make($this->filesystem, $pathToImage);
+        $fileSystemImagePath = $pathToImage;
+
+        $image = FilesystemImage::make($this->filesystem, $fileSystemImagePath);
 
         $tempImage = $image->tempImage();
 
@@ -89,6 +91,7 @@ class OptimizerChain
 
             $image->update($tempImage, $pathToOutput);
         } catch (\Exception $e) {
+            $this->logger->error("Optimizing {$fileSystemImagePath} failed!");
             throw $e;
         } finally {
             $tempImage->delete();

@@ -92,6 +92,7 @@ class OptimizerChain
             $image->update($tempImage, $pathToOutput);
         } catch (\Exception $e) {
             $this->logger->error("Optimizing {$fileSystemImagePath} failed!");
+
             throw $e;
         } finally {
             $tempImage->delete();

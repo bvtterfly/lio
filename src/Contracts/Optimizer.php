@@ -9,8 +9,7 @@ interface Optimizer
     /**
      * Determines if the given image can be handled by the optimizer.
      *
-     * @param Image $image
-     *
+     * @param  Image  $image
      * @return bool
      */
     public function canHandle(Image $image): bool;
@@ -18,8 +17,7 @@ interface Optimizer
     /**
      * Sets the path to the image that should be optimized.
      *
-     * @param string $imagePath
-     *
+     * @param  string  $imagePath
      * @return Optimizer
      */
     public function setImagePath(string $imagePath): self;
@@ -28,7 +26,6 @@ interface Optimizer
      * Sets the logger for logging optimization process.
      *
      * @param  LoggerInterface  $logger
-     *
      * @return Optimizer
      */
     public function setLogger(LoggerInterface $logger): self;
@@ -37,7 +34,6 @@ interface Optimizer
      * Sets the amount of seconds optimizer may use.
      *
      * @param  int  $timeout
-     *
      * @return Optimizer
      */
     public function setTimeout(int $timeout): self;

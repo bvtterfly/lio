@@ -53,23 +53,23 @@ return [
             '-mt',
             '-q 80',
         ],
-//        Svgo::class => [
-//            '--disable={cleanupIDs,removeViewBox}',
-//        ],
-//        ReSmushOptimizer::class => [
-//            'quality' => 92,
-//            'retry' => 3,
-//            'mime' => [
-//                'image/png',
-//                'image/jpeg',
-//                'image/gif',
-//                'image/bmp',
-//                'image/tiff',
-//            ],
-//
-//            'exif' => false,
-//
-//        ],
+        //        Svgo::class => [
+        //            '--disable={cleanupIDs,removeViewBox}',
+        //        ],
+        //        ReSmushOptimizer::class => [
+        //            'quality' => 92,
+        //            'retry' => 3,
+        //            'mime' => [
+        //                'image/png',
+        //                'image/jpeg',
+        //                'image/gif',
+        //                'image/bmp',
+        //                'image/tiff',
+        //            ],
+        //
+        //            'exif' => false,
+        //
+        //        ],
     ],
 
     /*
@@ -89,7 +89,6 @@ return [
         'gifsicle' => '',
         'cwebp' => '',
     ],
-
 
     /*
     * The directory where the temporary files will be stored.

@@ -11,8 +11,7 @@ class LioServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('lio')
-            ->hasConfigFile()
-        ;
+            ->hasConfigFile();
     }
 
     public function packageRegistered()

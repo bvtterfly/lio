@@ -45,7 +45,6 @@ it('can override arguments', function () {
         ->toBe("\"jpegoptim\" argument3 --argument4 'my-image.jpg'");
 });
 
-
 it('can get jpeg binary name', function () {
     $optimizer = (new Jpegoptim())->setImagePath('my-image.jpg');
 

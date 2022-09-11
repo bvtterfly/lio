@@ -11,7 +11,7 @@ class FilesystemImage
 
     public function __construct(
         private Filesystem $disk,
-        string             $pathToImage
+        string $pathToImage
     ) {
         if (! $disk->exists($pathToImage)) {
             throw new InvalidArgumentException("`{$pathToImage}` does not exist");

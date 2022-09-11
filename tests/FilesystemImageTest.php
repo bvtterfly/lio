@@ -14,7 +14,7 @@ beforeEach(function () {
 
 it('throw an exception when given a non existing file', function () {
     new FilesystemImage(Storage::disk('images'), 'non existing file');
-})->throws(InvalidArgumentException::class, "`non existing file` does not exist");
+})->throws(InvalidArgumentException::class, '`non existing file` does not exist');
 
 it('can get a temp file', function () {
     $imagesDisk = Storage::disk('images');
@@ -35,6 +35,5 @@ it('can update file content from temp file', function () {
         ->exists('new-test-file.txt')
         ->toBeTrue()
         ->get('new-test-file.txt')
-        ->toBe('new content')
-    ;
+        ->toBe('new content');
 });

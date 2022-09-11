@@ -59,7 +59,6 @@ class OptimizerChainFactory
 
                 self::ensureOptimizer($optimizer);
 
-
                 if (is_string($optimizer)) {
                     $optimizer = self::createOptimizer($optimizer, $options);
                 }
@@ -89,7 +88,6 @@ class OptimizerChainFactory
     /**
      * @param  mixed  $key
      * @param  mixed  $value
-     *
      * @return array
      */
     private static function getOptimizerAndOptions(mixed $key, mixed $value): array
@@ -135,8 +133,8 @@ class OptimizerChainFactory
     /**
      * @param  class-string<Optimizer>  $optimizerClass
      * @param  array  $options
-     *
      * @return Optimizer
+     *
      * @throws BindingResolutionException
      */
     private static function createOptimizer(string $optimizerClass, array $options): Optimizer

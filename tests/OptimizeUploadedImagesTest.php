@@ -1,6 +1,5 @@
 <?php
 
-
 use Bvtterfly\Lio\Middlewares\OptimizeUploadedImages;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
@@ -66,10 +65,8 @@ function getTempDirectory()
 {
     return (new Spatie\TemporaryDirectory\TemporaryDirectory(__DIR__.'/temp/'))
         ->force()
-        ->create()
-    ;
+        ->create();
 }
-
 
 function getImagePath($filename)
 {

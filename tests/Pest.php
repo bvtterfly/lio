@@ -17,8 +17,7 @@ function decreasedFilesystemFileSize(string $modifiedFilePath, string $originalF
 
     expect($modifiedFileSize)
         ->toBeGreaterThan(0)
-        ->toBeLessThan($originalFileSize)
-    ;
+        ->toBeLessThan($originalFileSize);
 }
 
 function getTempFilePath(string $filename): string

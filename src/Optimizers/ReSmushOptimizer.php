@@ -95,7 +95,7 @@ class ReSmushOptimizer implements Optimizer, HasConfig
         $result = $this->upload();
 
         if (! $result?->successful()) {
-            $this->logger?->error('Failed to upload image: ' . $result->body());
+            $this->logger?->error('Failed to upload image: '.$result->body());
 
             return;
         }
@@ -115,8 +115,8 @@ class ReSmushOptimizer implements Optimizer, HasConfig
             file_put_contents($this->imagePath, $downloadResponse->body());
             $this->logger->info('Image Optimized successfully');
         } else {
-            $this->logger->error('Failed to download image from: '. $destinationPath);
-            $this->logger->error('Error: '. $downloadResponse?->body());
+            $this->logger->error('Failed to download image from: '.$destinationPath);
+            $this->logger->error('Error: '.$downloadResponse?->body());
         }
     }
 

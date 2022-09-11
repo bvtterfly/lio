@@ -52,7 +52,7 @@ class OptimizerChain
     }
 
     /** Sets the amount of seconds each separate optimizer may use.
-     * @param int $timeoutInSeconds
+     * @param  int  $timeoutInSeconds
      * @return $this
      */
     public function setTimeout(int $timeoutInSeconds): static
@@ -113,8 +113,8 @@ class OptimizerChain
     }
 
     /**
-     * @param string $pathToImage
-     * @param Image $image
+     * @param  string  $pathToImage
+     * @param  Image  $image
      * @return void
      */
     protected function optimizeImage(string $pathToImage, Image $image): void

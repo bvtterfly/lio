@@ -16,8 +16,7 @@ it('gets a test logger if log_optimizer_activity is false', function () {
         ->getLogger()
         ->toBeInstanceOf(\Monolog\Logger::class)
         ->getName()
-        ->toBe('testing')
-    ;
+        ->toBe('testing');
 });
 
 it('create a logger from class', function () {
@@ -25,16 +24,14 @@ it('create a logger from class', function () {
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getLogger())
         ->toBeInstanceOf(Psr\Log\LoggerInterface::class)
-        ->toBeInstanceOf(NullLogger::class)
-    ;
+        ->toBeInstanceOf(NullLogger::class);
 });
 
 it('create optimizer chain with configured optimizers', function () {
     Config::set('lio.optimizers', []);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getOptimizers())
-        ->toHaveCount(0)
-    ;
+        ->toHaveCount(0);
 
     Config::set('lio.optimizers', [Jpegoptim::class => []]);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
@@ -42,15 +39,13 @@ it('create optimizer chain with configured optimizers', function () {
         ->toHaveCount(1)
         ->sequence(
             fn ($optimizer) => $optimizer->toBeInstanceOf(Jpegoptim::class),
-        )
-    ;
+        );
 });
 
 it('create optimizer chain with configured filesystem disk', function () {
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getFilesystem())
-        ->toBeInstanceOf(Filesystem::class)
-    ;
+        ->toBeInstanceOf(Filesystem::class);
 
     Config::set('lio.optimizers', [Jpegoptim::class]);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
@@ -58,8 +53,7 @@ it('create optimizer chain with configured filesystem disk', function () {
         ->toHaveCount(1)
         ->sequence(
             fn ($optimizer) => $optimizer->toBeInstanceOf(Jpegoptim::class),
-        )
-    ;
+        );
 });
 
 it('will throw an exception with a misconfigured optimizer', function () {

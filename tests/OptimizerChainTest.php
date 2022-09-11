@@ -29,8 +29,7 @@ it('can decrease size of a file', function ($filename, $tempFilename, $optimizer
                    ->getAllLinesAsString()
                    ->toContain($optimizerName)
         ->not
-        ->toContain($doesntFindOptimizer)
-    ;
+        ->toContain($doesntFindOptimizer);
 })->with([
     ['test.jpeg', 'image.jpeg', 'jpegoptim', 'gifsicle'],
     ['test.png', 'image.png', 'pngquant', 'jpegoptim'],
@@ -91,6 +90,5 @@ it('cant optimize text file', function () {
         ->toBeArray()
         ->toHaveCount(1)
         ->and($imageDist->get('test.txt'))
-        ->toEqual($imageDist->get('opt-test.txt'))
-    ;
+        ->toEqual($imageDist->get('opt-test.txt'));
 });

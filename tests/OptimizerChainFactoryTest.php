@@ -1,26 +1,31 @@
 <?php
 
-use Bvtterfly\Lio\DummyLogger;
 use Bvtterfly\Lio\Exceptions\InvalidConfiguration;
 use Bvtterfly\Lio\OptimizerChain;
 use Bvtterfly\Lio\OptimizerChainFactory;
 use Bvtterfly\Lio\Optimizers\Jpegoptim;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
+use Psr\Log\NullLogger;
 
-it('gets a dummy logger', function () {
+it('gets a test logger if log_optimizer_activity is false', function () {
     Config::set('lio.log_optimizer_activity', false);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getLogger())
-        ->toBeInstanceOf(DummyLogger::class)
+        ->toBeInstanceOf(\Illuminate\Log\Logger::class)
+        ->getLogger()
+        ->toBeInstanceOf(\Monolog\Logger::class)
+        ->getName()
+        ->toBe('testing')
     ;
 });
 
 it('create a logger from class', function () {
-    Config::set('lio.log_optimizer_activity', DummyLogger::class);
+    Config::set('lio.log_optimizer_activity', NullLogger::class);
     $optimizerChain = OptimizerChainFactory::create(Config::get('lio'));
     expect($optimizerChain->getLogger())
         ->toBeInstanceOf(Psr\Log\LoggerInterface::class)
+        ->toBeInstanceOf(NullLogger::class)
     ;
 });
 

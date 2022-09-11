@@ -18,10 +18,6 @@ class OptimizerChain
 
     private Filesystem $filesystem;
 
-    public function __construct()
-    {
-    }
-
     public function getOptimizers(): array
     {
         return $this->optimizers;

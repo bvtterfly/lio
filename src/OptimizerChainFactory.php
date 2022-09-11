@@ -6,6 +6,7 @@ use Bvtterfly\Lio\Contracts\HasArguments;
 use Bvtterfly\Lio\Contracts\HasConfig;
 use Bvtterfly\Lio\Contracts\Optimizer;
 use Bvtterfly\Lio\Exceptions\InvalidConfiguration;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Log\LogManager;
@@ -27,27 +28,24 @@ class OptimizerChainFactory
             ->setTimeout($config['timeout']);
     }
 
+    /**
+     * @throws InvalidConfiguration
+     */
     protected static function getLogger($config): LoggerInterface
     {
         $configuredLogger = $config['log_optimizer_activity'];
 
+        if (class_exists($configuredLogger)) {
+            self::ensureLogger($configuredLogger);
+
+            return new $configuredLogger();
+        }
+
         /** @var LogManager $logManager */
         $logManager = app(LogManager::class);
 
-        if ($configuredLogger === true) {
-            return $logManager->channel();
-        }
-
-        if ($configuredLogger === false) {
-            return new DummyLogger();
-        }
-
-        if (class_exists($configuredLogger)) {
-            if (is_a($configuredLogger, LoggerInterface::class, true)) {
-                return new $configuredLogger();
-            }
-
-            throw InvalidConfiguration::notAnLogger($configuredLogger);
+        if (is_bool($configuredLogger)) {
+            $configuredLogger = $configuredLogger ? $logManager->getDefaultDriver() : 'null';
         }
 
         return $logManager->channel($configuredLogger);
@@ -57,31 +55,13 @@ class OptimizerChainFactory
     {
         return collect($config['optimizers'])
             ->map(function (mixed $value, mixed $key) use ($logger) {
-                $options = [];
-                if (is_int($key)) {
-                    $optimizer = $value;
-                } else {
-                    $optimizer = $key;
-                    if (is_array($value)) {
-                        $options = $value;
-                    }
-                }
-                if (
-                    ! is_a($optimizer, Optimizer::class, true)
-                ) {
-                    $optimizerClass = is_object($optimizer) ? get_class($optimizer) : $optimizer;
+                [$optimizer, $options] = self::getOptimizerAndOptions($key, $value);
 
-                    throw InvalidConfiguration::notAnOptimizer($optimizerClass);
-                }
+                self::ensureOptimizer($optimizer);
+
 
                 if (is_string($optimizer)) {
-                    $optimizer = app()->make($optimizer);
-                    if ($optimizer instanceof HasArguments && count($options)) {
-                        $optimizer->setArguments($options);
-                    }
-                    if ($optimizer instanceof HasConfig && count($options)) {
-                        $optimizer->setConfig($options);
-                    }
+                    $optimizer = self::createOptimizer($optimizer, $options);
                 }
 
                 /** @var Optimizer $optimizer */
@@ -104,5 +84,71 @@ class OptimizerChainFactory
         }
 
         return $factory->disk($disk);
+    }
+
+    /**
+     * @param  mixed  $key
+     * @param  mixed  $value
+     *
+     * @return array
+     */
+    private static function getOptimizerAndOptions(mixed $key, mixed $value): array
+    {
+        $options = [];
+        if (is_int($key)) {
+            return [$value, $options];
+        }
+
+        $optimizer = $key;
+
+        if (is_array($value)) {
+            $options = $value;
+        }
+
+        return [$optimizer, $options];
+    }
+
+    /**
+     * @throws InvalidConfiguration
+     */
+    private static function ensureOptimizer(mixed $optimizer): void
+    {
+        if (
+            ! is_a($optimizer, Optimizer::class, true)
+        ) {
+            $optimizerClass = is_object($optimizer) ? get_class($optimizer) : $optimizer;
+
+            throw InvalidConfiguration::notAnOptimizer($optimizerClass);
+        }
+    }
+
+    /**
+     * @throws InvalidConfiguration
+     */
+    private static function ensureLogger(string $logger): void
+    {
+        if (! is_a($logger, LoggerInterface::class, true)) {
+            throw InvalidConfiguration::notAnLogger($logger);
+        }
+    }
+
+    /**
+     * @param  class-string<Optimizer>  $optimizerClass
+     * @param  array  $options
+     *
+     * @return Optimizer
+     * @throws BindingResolutionException
+     */
+    private static function createOptimizer(string $optimizerClass, array $options): Optimizer
+    {
+        $optimizer = app()->make($optimizerClass);
+        if ($optimizer instanceof HasArguments && count($options)) {
+            $optimizer->setArguments($options);
+        }
+        if ($optimizer instanceof HasConfig && count($options)) {
+            $optimizer->setConfig($options);
+        }
+
+        return $optimizer;
     }
 }

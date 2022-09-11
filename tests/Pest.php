@@ -21,6 +21,11 @@ function decreasedFilesystemFileSize(string $modifiedFilePath, string $originalF
     ;
 }
 
+function getTempFilePath(string $filename): string
+{
+    return __DIR__.'/tempFiles/'.$filename;
+}
+
 function imageFileExists(string $path)
 {
     expect(Storage::disk('images')->exists($path))->toBeTrue();

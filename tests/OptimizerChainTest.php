@@ -15,22 +15,29 @@ beforeEach(function () {
     Config::set('lio.log_optimizer_activity', ArrayLogger::class);
 });
 
-it('can optimize a filesystem image and decrease size of a jpeg file', function () {
+it('can decrease size of a file', function ($filename, $tempFilename, $optimizerName, $doesntFindOptimizer) {
     $imageDist = Storage::disk('images');
-    $imageDist->put('test.jpeg', file_get_contents(__DIR__.'/tempFiles/image.jpeg'));
+    $filepath = getTempFilePath($tempFilename);
+    $imageDist->put($filename, file_get_contents($filepath));
     /** @var OptimizerChain $optimizerChain */
     $optimizerChain = app(OptimizerChain::class);
-    $optimizerChain->optimize('test.jpeg', 'opt-test.jpeg');
-    decreasedFilesystemFileSize('opt-test.jpeg', 'test.jpeg');
+    $optimizedFilename = "opt-{$filename}";
+    $optimizerChain->optimize($filename, $optimizedFilename);
+    decreasedFilesystemFileSize($optimizedFilename, $filename);
     $logger = $optimizerChain->getLogger();
     expect($logger)->toBeInstanceOf(ArrayLogger::class)
-        ->getAllLinesAsString()
-        ->toContain('jpegoptim')
-        ->getAllLinesAsString()
+                   ->getAllLinesAsString()
+                   ->toContain($optimizerName)
         ->not
-        ->toContain('gifsicle')
+        ->toContain($doesntFindOptimizer)
     ;
-});
+})->with([
+    ['test.jpeg', 'image.jpeg', 'jpegoptim', 'gifsicle'],
+    ['test.png', 'image.png', 'pngquant', 'jpegoptim'],
+    ['test.gif', 'animated.gif', 'gifsicle', 'jpegoptim'],
+    ['test.svg', 'graph.svg', 'svgo', 'jpegoptim'],
+    ['test.webp', 'image.webp', 'cwebp', 'jpegoptim'],
+]);
 
 it('can optimize a local image', function () {
     $tempDirectory = (new TemporaryDirectory(__DIR__.'/temp'))->force()->create();
@@ -70,71 +77,6 @@ it('can decrease size of a png file with resmush', function () {
                    ->toContain('reSmush')
         ->not
         ->toContain('jpegoptim');
-});
-
-it('can decrease size of a png file', function () {
-    $imageDist = Storage::disk('images');
-    $imageDist->put('test.png', file_get_contents(__DIR__.'/tempFiles/image.png'));
-    /** @var OptimizerChain $optimizerChain */
-    $optimizerChain = app(OptimizerChain::class);
-    $optimizerChain->optimize('test.png', 'opt-test.png');
-    decreasedFilesystemFileSize('opt-test.png', 'test.png');
-    $logger = $optimizerChain->getLogger();
-    expect($logger)->toBeInstanceOf(ArrayLogger::class)
-        ->getAllLinesAsString()
-        ->toContain('pngquant')
-        ->not
-        ->toContain('jpegoptim')
-    ;
-});
-
-it('can decrease size of a gif file', function () {
-    $imageDist = Storage::disk('images');
-    $imageDist->put('test.gif', file_get_contents(__DIR__.'/tempFiles/animated.gif'));
-    /** @var OptimizerChain $optimizerChain */
-    $optimizerChain = app(OptimizerChain::class);
-    $optimizerChain->optimize('test.gif', 'opt-test.gif');
-    decreasedFilesystemFileSize('opt-test.gif', 'test.gif');
-    $logger = $optimizerChain->getLogger();
-    expect($logger)->toBeInstanceOf(ArrayLogger::class)
-        ->getAllLinesAsString()
-        ->toContain('gifsicle')
-        ->not
-        ->toContain('jpegoptim')
-    ;
-});
-
-
-it('can decrease size of a svg file', function () {
-    $imageDist = Storage::disk('images');
-    $imageDist->put('test.svg', file_get_contents(__DIR__.'/tempFiles/graph.svg'));
-    /** @var OptimizerChain $optimizerChain */
-    $optimizerChain = app(OptimizerChain::class);
-    $optimizerChain->optimize('test.svg', 'opt-test.svg');
-    decreasedFilesystemFileSize('opt-test.svg', 'test.svg');
-    $logger = $optimizerChain->getLogger();
-    expect($logger)->toBeInstanceOf(ArrayLogger::class)
-        ->getAllLinesAsString()
-        ->toContain('svgo')
-        ->not
-        ->toContain('jpegoptim')
-    ;
-});
-
-it('can decrease size of a webp file', function () {
-    $imageDist = Storage::disk('images');
-    $imageDist->put('test.webp', file_get_contents(__DIR__.'/tempFiles/image.webp'));
-    /** @var OptimizerChain $optimizerChain */
-    $optimizerChain = app(OptimizerChain::class);
-    $optimizerChain->optimize('test.webp', 'opt-test.webp');
-    decreasedFilesystemFileSize('opt-test.webp', 'test.webp');
-    $logger = $optimizerChain->getLogger();
-    expect($logger)->toBeInstanceOf(ArrayLogger::class)
-        ->getAllLinesAsString()
-        ->toContain('cwebp')
-        ->not
-        ->toContain('jpegoptim')
-    ;
 });
 
 it('cant optimize text file', function () {

@@ -2,11 +2,6 @@
 
 use Bvtterfly\Lio\LocalImage;
 
-function getTempFilePath(string $filename): string
-{
-    return __DIR__.'/tempFiles/'.$filename;
-}
-
 it('can create a local image when file exist', function () {
     $imageFilePath = getTempFilePath('image.jpeg');
     $image = new LocalImage($imageFilePath);

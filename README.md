@@ -1,3 +1,7 @@
+🚨 THIS PACKAGE HAS BEEN ABANDONED 🚨
+
+I no longer use Laravel and cannot justify the time needed to maintain this package. That's why I have chosen to abandon it. Feel free to fork my code and maintain your own copy.
+
 # Easily optimize images using Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/bvtterfly/lio.svg?style=flat-square)](https://packagist.org/packages/bvtterfly/lio)
